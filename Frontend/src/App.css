@@ -13,9 +13,9 @@
     background: -ms-linear-gradient(79deg, #cf2c7e, #506b11 48%, #1385e2);
     background: linear-gradient(79deg, #de4575, #8a9d23 48%, #5022ce);
     background-size: 400% 400%;
-    -webkit-animation: errorBg 60s ease infinite;
-    -moz-animation: errorBg 60s ease infinite;
-    animation: errorBg 60s ease infinite;
+    -webkit-animation: errorBg 120s ease infinite;
+    -moz-animation: errorBg 120s ease infinite;
+    animation: errorBg 120s ease infinite;
   
 }
 
@@ -87,7 +87,6 @@
 }
 
 .user-form{
-
   display: flex;
   align-items: center;
   text-align: center;
@@ -119,7 +118,8 @@ button {
   padding: 20px;
   border-radius: 10px;
   cursor: pointer;
-  color: #7439db;
+  color: black;
+  font-weight : bold;
 }
 
 .blue-button {
@@ -132,12 +132,9 @@ button:hover{
   transition: all 0.3s ease;
 }
 
-
-
 .link-btn {
   background-color: aliceblue;
   color: red;
-  
 }
 
 .link-btn:hover {
