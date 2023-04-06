@@ -6,7 +6,8 @@ export const Home = (props) => {
 
     let history = useHistory();
 
-    const types = ['Roger Ramanujan', 'Roger Ramanujan Gordon', 'Capparelli\'s Identity'];
+    const partitions = ['Roger Ramanujan', 'Roger Ramanujan Gordon', 'Capparelli\'s Identity'];
+    const options = ['Enumerator', 'Counter'];
 
     const Button = styled.button``;
 
@@ -19,15 +20,16 @@ export const Home = (props) => {
         display: flex;
     `;
 
-    const [active, setActive] = useState(types[0]);
+    const [active, setActive] = useState('');
+    const [option, setOption] = useState('');
     const [mValue, setMValue] = useState("");
     const [nValue, setNValue] = useState("");
     const [kValue, setKValue] = useState("");
 
-    function ToggleGroup() {
+    function ToggleGroupPartitions() {
         return (
-          <ButtonGroup>
-            {types.map(type => (
+          <p>
+            {partitions.map(type => (
               <ButtonToggle
                 key={type}
                 active={active === type}
@@ -36,33 +38,53 @@ export const Home = (props) => {
                 {type}
               </ButtonToggle>
             ))}
-          </ButtonGroup>
+          </p>
         );
     }
 
-    function Inside() {
-        if (active === "Roger Ramanujan"){
+    function ToggleGroupOptions() {
+        if (active.length !== 0) {
+            return (
+                <div className= "Option">
+                    <p>
+                        {options.map(type => (
+                        <ButtonToggle
+                            key={type}
+                            active={option === type}
+                            onClick={() => setOption(type)}
+                        >
+                            {type}
+                        </ButtonToggle>
+                        ))}
+                    </p>
+                </div>
+            );
+        }
+    }
+
+    function Inputs() {
+        if (active === "Roger Ramanujan" && option.length !== 0){
             return (
                 <div className = "Roger Ramanujan">
-                    <input value = {mValue} onChange={(e) => setMValue(e.target.value)} placeholder = "Write value of m here" />
-                    <input value = {nValue} onChange={(e) => setNValue(e.target.value)} placeholder = "Write value of n here" />
+                    <input value = {mValue} onChange={(e) => setMValue(e.target.value)} placeholder = "Write the value of m here!" />
+                    <input value = {nValue} onChange={(e) => setNValue(e.target.value)} placeholder = "Write the value of n here!" />
                 </div>
             );
         }
-        else if (active === "Roger Ramanujan Gordon"){
+        else if (active === "Roger Ramanujan Gordon" && option.length !== 0){
             return (
                 <div className = "Roger Ramanujan Gordon">
-                    <input value = {mValue} onChange={(e) => setMValue(e.target.value)} placeholder = "Write value of m here" />
-                    <input value = {nValue} onChange={(e) => setNValue(e.target.value)} placeholder = "Write value of n here" />
-                    <input value = {kValue} onChange={(e) => setKValue(e.target.value)} placeholder = "Write value of k here" />
+                    <input value = {mValue} onChange={(e) => setMValue(e.target.value)} placeholder = "Write the value of m here!" />
+                    <input value = {nValue} onChange={(e) => setNValue(e.target.value)} placeholder = "Write the value of n here!" />
+                    <input value = {kValue} onChange={(e) => setKValue(e.target.value)} placeholder = "Write the value of k here!" />
                 </div>
             );
         }
-        if (active === "Capparelli\'s Identity"){
+        if (active === "Capparelli\'s Identity" && option.length !== 0){
             return (
                 <div className = "Capparelli\'s Identity">
-                    <input value = {mValue} onChange={(e) => setMValue(e.target.value)} placeholder = "Write value of m here" />
-                    <input value = {nValue} onChange={(e) => setNValue(e.target.value)} placeholder = "Write value of n here" />
+                    <input value = {mValue} onChange={(e) => setMValue(e.target.value)} placeholder = "Write the value of m here!" />
+                    <input value = {nValue} onChange={(e) => setNValue(e.target.value)} placeholder = "Write the value of n here!" />
                 </div>
             );
         }
@@ -71,8 +93,9 @@ export const Home = (props) => {
     return (
         <div className = "Partionerator">
             <h1>WELCOME TO Partionerator</h1>
-            <ToggleGroup />
-            <Inside />
+            <ToggleGroupPartitions />
+            <ToggleGroupOptions />
+            <Inputs />
         </div>
     );
 }

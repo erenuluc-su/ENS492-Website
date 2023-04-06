@@ -28,7 +28,7 @@
 }
 
 .panel-gnrl{
-  display:list-item;
+  display: flex;
   background-color: aquamarine;
 }
 
@@ -95,11 +95,6 @@
   width: fit-content;
 }
 
-input[type=checkbox] {
-  transform: scale(2);
-  margin-left: .5rem;
-}
-
 label {
   text-align: left;
   padding: 0.25rem 0;
@@ -109,17 +104,21 @@ input {
   margin: 0.5rem 0;
   padding: 1rem;
   border: none;
-  border-radius: 10px;
+  border-radius: 60px;
+  margin-right: 0.5cm;
+  width: 4cm;
 }
 
 button {
   border: none;
   background-color: aliceblue;
   padding: 20px;
-  border-radius: 10px;
+  border-radius: 70px;
   cursor: pointer;
   color: black;
   font-weight : bold;
+  margin-right: 0.5cm;
+  margin-bottom: 0.5cm;
 }
 
 .blue-button {
@@ -208,7 +207,7 @@ text-align: center;
 text-decoration: none;
 color: #ffe221;
 margin: 30px;
-display: block;
+display: flex;
 }
 
 .wpos{
@@ -458,11 +457,11 @@ table .col{
 
 .forum-expl{
   font-size: x-small;
-  display: grid;
+  display: flex;
 }
 
 .forum{
-  display: grid;
+  display: flex;
 }
 
 button.like::before {
