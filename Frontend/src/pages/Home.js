@@ -1,9 +1,18 @@
-import React, { useState } from "react"
-import { useHistory} from "react-router-dom";
+import React, { useState, useEffect } from "react"
+import styled from 'styled-components';
 
 export const Home = (props) => {
 
-    let history = useHistory();
+    const Button = styled.button``;
+
+    const ButtonToggle = styled(Button)`
+        opacity: 0.6;
+        ${({ active }) => active && `opacity: 1;`}
+    `;
+
+    const ButtonGroup = styled.div`
+        display: flex;
+    `;
 
     const partitions = ['Roger Ramanujan', 'Roger Ramanujan Gordon', 'Capparelli\'s Identity'];
     const options = ['Enumerator', 'Counter'];
@@ -18,13 +27,13 @@ export const Home = (props) => {
         return (
           <p>
             {partitions.map(type => (
-              <button
+              <ButtonToggle
                 key={type}
                 active={active === type}
                 onClick={() => setActive(type)}
               >
                 {type}
-              </button>
+              </ButtonToggle>
             ))}
           </p>
         );
@@ -36,19 +45,25 @@ export const Home = (props) => {
                 <div className= "Option">
                     <p>
                         {options.map(type => (
-                        <button
+                        <ButtonToggle
                             key={type}
                             active={option === type}
                             onClick={() => setOption(type)}
                         >
                             {type}
-                        </button>
+                        </ButtonToggle>
                         ))}
                     </p>
                 </div>
             );
         }
     }
+
+    useEffect(() => {
+        setMValue("");
+        setNValue("");
+        setKValue("");
+    }, [active]);
 
     return (
         <div className = "Partionerator">
@@ -72,7 +87,7 @@ export const Home = (props) => {
                         <input type="text" value = {kValue} onChange={(e) => setKValue(e.target.value)} placeholder = "Write the value of k here!" />
                         </div>
                     )
-                } else if (active === "Capparelli\'s Identity" && option.length !== 0) {
+                } else if (active === "Capparelli's Identity" && option.length !== 0) {
                     return (
                         <div className = "Capparelli\'s Identity">
                         <input type="text" value = {mValue} onChange={(e) => setMValue(e.target.value)} placeholder = "Write the value of m here!" />
