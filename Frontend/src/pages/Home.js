@@ -1,6 +1,5 @@
 import React, { useState } from "react"
 import { useHistory} from "react-router-dom";
-import styled from 'styled-components';
 
 export const Home = (props) => {
 
@@ -8,17 +7,6 @@ export const Home = (props) => {
 
     const partitions = ['Roger Ramanujan', 'Roger Ramanujan Gordon', 'Capparelli\'s Identity'];
     const options = ['Enumerator', 'Counter'];
-
-    const Button = styled.button``;
-
-    const ButtonToggle = styled(Button)`
-        opacity: 0.6;
-        ${({ active }) => active && `opacity: 1;`}
-    `;
-
-    const ButtonGroup = styled.div`
-        display: flex;
-    `;
 
     const [active, setActive] = useState('');
     const [option, setOption] = useState('');
@@ -30,13 +18,13 @@ export const Home = (props) => {
         return (
           <p>
             {partitions.map(type => (
-              <ButtonToggle
+              <button
                 key={type}
                 active={active === type}
                 onClick={() => setActive(type)}
               >
                 {type}
-              </ButtonToggle>
+              </button>
             ))}
           </p>
         );
@@ -48,13 +36,13 @@ export const Home = (props) => {
                 <div className= "Option">
                     <p>
                         {options.map(type => (
-                        <ButtonToggle
+                        <button
                             key={type}
                             active={option === type}
                             onClick={() => setOption(type)}
                         >
                             {type}
-                        </ButtonToggle>
+                        </button>
                         ))}
                     </p>
                 </div>
@@ -66,25 +54,25 @@ export const Home = (props) => {
         if (active === "Roger Ramanujan" && option.length !== 0){
             return (
                 <div className = "Roger Ramanujan">
-                    <input value = {mValue} onChange={(e) => setMValue(e.target.value)} placeholder = "Write the value of m here!" />
-                    <input value = {nValue} onChange={(e) => setNValue(e.target.value)} placeholder = "Write the value of n here!" />
+                    <input type="text" value = {mValue} onChange={(e) => setMValue(e.target.value)} placeholder = "Write the value of m here!" />
+                    <input type="text" value = {nValue} onChange={(e) => setNValue(e.target.value)} placeholder = "Write the value of n here!" />
                 </div>
             );
         }
         else if (active === "Roger Ramanujan Gordon" && option.length !== 0){
             return (
                 <div className = "Roger Ramanujan Gordon">
-                    <input value = {mValue} onChange={(e) => setMValue(e.target.value)} placeholder = "Write the value of m here!" />
-                    <input value = {nValue} onChange={(e) => setNValue(e.target.value)} placeholder = "Write the value of n here!" />
-                    <input value = {kValue} onChange={(e) => setKValue(e.target.value)} placeholder = "Write the value of k here!" />
+                    <input type="text" value = {mValue} onChange={(e) => setMValue(e.target.value)} placeholder = "Write the value of m here!" />
+                    <input type="text" value = {nValue} onChange={(e) => setNValue(e.target.value)} placeholder = "Write the value of n here!" />
+                    <input type="text" value = {kValue} onChange={(e) => setKValue(e.target.value)} placeholder = "Write the value of k here!" />
                 </div>
             );
         }
         if (active === "Capparelli\'s Identity" && option.length !== 0){
             return (
                 <div className = "Capparelli\'s Identity">
-                    <input value = {mValue} onChange={(e) => setMValue(e.target.value)} placeholder = "Write the value of m here!" />
-                    <input value = {nValue} onChange={(e) => setNValue(e.target.value)} placeholder = "Write the value of n here!" />
+                    <input type="text" value = {mValue} onChange={(e) => setMValue(e.target.value)} placeholder = "Write the value of m here!" />
+                    <input type="text" value = {nValue} onChange={(e) => setNValue(e.target.value)} placeholder = "Write the value of n here!" />
                 </div>
             );
         }
