@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"
 import styled from 'styled-components';
+import { Popup } from "semantic-ui-react";
 
 export const Home = (props) => {
 
@@ -97,6 +98,29 @@ export const Home = (props) => {
                 }
                 })()}
             </div>
+            <div>
+                {(() => {
+                if (active.length !== 0 && option.length !== 0) {
+                    return (
+                        <div className = "Generate">
+                        <Button> Generate </Button>
+                        </div>
+                    )
+                } else {
+                    return (
+                        <div className = "NoGenerate">
+                        </div>
+                    )
+                }
+                })()}
+            </div>
+            <Popup
+                trigger={<child-btns>Info</child-btns>}
+                position = "top left"
+                style={{ color: 'white' }}
+            >
+                "Partionerator" is a web application that enables users to efficiently generate a range of partition (Rogers Ramanujan, Rogers Ramanujan Gordon, Capparelli's Identity and X) enumeration and counting methods. 
+            </Popup>
         </div>
     );
 }

@@ -109,6 +109,17 @@ input {
   width: 4cm;
 }
 
+child-btns{
+  margin-top: 20%;
+  bottom: 6px;
+  right: 30px;
+  position: absolute;
+  padding: 20px;
+  border-radius: 70px;
+  cursor: pointer;
+  font-weight : bold;
+}
+
 button {
   border: none;
   background-color: aliceblue;
@@ -119,6 +130,7 @@ button {
   font-weight : bold;
   margin-right: 0.5cm;
   margin-bottom: 0.5cm;
+  margin-top: 0.5cm;
 }
 
 .blue-button {
@@ -154,35 +166,6 @@ button:hover{
 img {
   margin-left: 100px;
   margin-right: 100px;
-}
-
-
-.popup {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-  background-color: darkgray;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: all 5s ease-in-out;
-}
-
-.popup-inner {
-  position: relative;
-  padding: 32px;
-  width: 100%;
-  max-width: 640px;
-  background-color: white;
-  color: black;
-}
-
-.popup-inner .close-button {
-  position: absolute;
-  top: 16px;
-  right: 16px;
 }
 
 .ptable table{
@@ -230,7 +213,7 @@ table .col{
 }
 
 .wpos:hover td{
-	color: black;
+	color: white;
   transition: all 0.678s ease;
   
 }
@@ -242,13 +225,6 @@ table .col{
   display: flex;
 }
 
-.child-btns{
-  bottom: 6px;
-  right: 30px;
-  position: absolute;
-
-}
-
 .gnl-btn {
   background: none;
   bottom: 40px;
@@ -257,8 +233,6 @@ table .col{
   cursor: pointer;
   color: white;
   text-decoration: underline;
-  
-  
 }
 
 .gnl-btn:hover{
@@ -415,7 +389,7 @@ table .col{
 .comment-actions {
   display: flex;
   font-size: 12px;
-  color: rgb(51, 51, 51);
+  color: white;
   cursor: pointer;
   margin-top: 8px;
 }
