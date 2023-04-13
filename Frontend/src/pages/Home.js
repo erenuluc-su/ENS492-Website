@@ -72,7 +72,7 @@ export const Home = (props) => {
             <ToggleGroupOptions />
             <div>
                 {(() => {
-                if (active === "Roger Ramanujan" && option.length !== 0) {
+                if (active === "Rogers Ramanujan" && option.length !== 0) {
                     return (
                         <div className = "Rogers Ramanujan">
                         <input type="text" value = {mValue} onChange={(e) => setMValue(e.target.value)} placeholder = "Write the value of m here!" />
