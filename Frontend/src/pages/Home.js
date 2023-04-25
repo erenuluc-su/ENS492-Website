@@ -1,12 +1,8 @@
-import React, { useState } from "react"
-import { useHistory} from "react-router-dom";
+import React, { useState, useEffect } from "react"
 import styled from 'styled-components';
+import { Popup } from "semantic-ui-react";
 
 export const Home = (props) => {
-
-    let history = useHistory();
-
-    const types = ['Roger Ramanujan', 'Roger Ramanujan Gordon', 'Capparelli\'s Identity'];
 
     const Button = styled.button``;
 
@@ -19,15 +15,19 @@ export const Home = (props) => {
         display: flex;
     `;
 
-    const [active, setActive] = useState(types[0]);
+    const partitions = ['Rogers Ramanujan', 'Rogers Ramanujan Gordon', 'Capparelli\'s Identity'];
+    const options = ['Enumerator', 'Counter'];
+
+    const [active, setActive] = useState('');
+    const [option, setOption] = useState('');
     const [mValue, setMValue] = useState("");
     const [nValue, setNValue] = useState("");
     const [kValue, setKValue] = useState("");
 
-    function ToggleGroup() {
+    function ToggleGroupPartitions() {
         return (
-          <ButtonGroup>
-            {types.map(type => (
+          <p>
+            {partitions.map(type => (
               <ButtonToggle
                 key={type}
                 active={active === type}
@@ -36,43 +36,91 @@ export const Home = (props) => {
                 {type}
               </ButtonToggle>
             ))}
-          </ButtonGroup>
+          </p>
         );
     }
 
-    function Inside() {
-        if (active === "Roger Ramanujan"){
+    function ToggleGroupOptions() {
+        if (active.length !== 0) {
             return (
-                <div className = "Roger Ramanujan">
-                    <input value = {mValue} onChange={(e) => setMValue(e.target.value)} placeholder = "Write value of m here" />
-                    <input value = {nValue} onChange={(e) => setNValue(e.target.value)} placeholder = "Write value of n here" />
-                </div>
-            );
-        }
-        else if (active === "Roger Ramanujan Gordon"){
-            return (
-                <div className = "Roger Ramanujan Gordon">
-                    <input value = {mValue} onChange={(e) => setMValue(e.target.value)} placeholder = "Write value of m here" />
-                    <input value = {nValue} onChange={(e) => setNValue(e.target.value)} placeholder = "Write value of n here" />
-                    <input value = {kValue} onChange={(e) => setKValue(e.target.value)} placeholder = "Write value of k here" />
-                </div>
-            );
-        }
-        if (active === "Capparelli\'s Identity"){
-            return (
-                <div className = "Capparelli\'s Identity">
-                    <input value = {mValue} onChange={(e) => setMValue(e.target.value)} placeholder = "Write value of m here" />
-                    <input value = {nValue} onChange={(e) => setNValue(e.target.value)} placeholder = "Write value of n here" />
+                <div className= "Option">
+                    <p>
+                        {options.map(type => (
+                        <ButtonToggle
+                            key={type}
+                            active={option === type}
+                            onClick={() => setOption(type)}
+                        >
+                            {type}
+                        </ButtonToggle>
+                        ))}
+                    </p>
                 </div>
             );
         }
     }
+
+    useEffect(() => {
+        setMValue("");
+        setNValue("");
+        setKValue("");
+    }, [active]);
 
     return (
         <div className = "Partionerator">
             <h1>WELCOME TO Partionerator</h1>
-            <ToggleGroup />
-            <Inside />
+            <ToggleGroupPartitions />
+            <ToggleGroupOptions />
+            <div>
+                {(() => {
+                if (active === "Rogers Ramanujan" && option.length !== 0) {
+                    return (
+                        <div className = "Rogers Ramanujan">
+                        <input type="text" value = {mValue} onChange={(e) => setMValue(e.target.value)} placeholder = "Write the value of m here!" />
+                        <input type="text" value = {nValue} onChange={(e) => setNValue(e.target.value)} placeholder = "Write the value of n here!" />
+                        </div>
+                    )
+                } else if (active === "Rogers Ramanujan Gordon" && option.length !== 0) {
+                    return (
+                        <div className = "Roger Ramanujan Gordon">
+                        <input type="text" value = {mValue} onChange={(e) => setMValue(e.target.value)} placeholder = "Write the value of m here!" />
+                        <input type="text" value = {nValue} onChange={(e) => setNValue(e.target.value)} placeholder = "Write the value of n here!" />
+                        <input type="text" value = {kValue} onChange={(e) => setKValue(e.target.value)} placeholder = "Write the value of k here!" />
+                        </div>
+                    )
+                } else if (active === "Capparelli's Identity" && option.length !== 0) {
+                    return (
+                        <div className = "Capparelli\'s Identity">
+                        <input type="text" value = {mValue} onChange={(e) => setMValue(e.target.value)} placeholder = "Write the value of m here!" />
+                        <input type="text" value = {nValue} onChange={(e) => setNValue(e.target.value)} placeholder = "Write the value of n here!" />
+                        </div>
+                    )
+                }
+                })()}
+            </div>
+            <div>
+                {(() => {
+                if (active.length !== 0 && option.length !== 0) {
+                    return (
+                        <div className = "Generate">
+                        <Button> Generate </Button>
+                        </div>
+                    )
+                } else {
+                    return (
+                        <div className = "NoGenerate">
+                        </div>
+                    )
+                }
+                })()}
+            </div>
+            <Popup
+                trigger={<child-btns>Info</child-btns>}
+                position = "top left"
+                style={{ color: 'white' }}
+            >
+                "Partionerator" is a web application that enables users to efficiently generate a range of partition (Rogers Ramanujan, Rogers Ramanujan Gordon, Capparelli's Identity and X) enumeration and counting methods. 
+            </Popup>
         </div>
     );
 }
