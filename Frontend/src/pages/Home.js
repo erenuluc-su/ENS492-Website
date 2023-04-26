@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"
 import styled from 'styled-components';
 import { Popup } from "semantic-ui-react";
+import Axios from 'axios'
 
 export const Home = (props) => {
 
@@ -66,6 +67,15 @@ export const Home = (props) => {
         setKValue("");
     }, [active]);
 
+    const generate = () => {
+        Axios.post("http://localhost:3001/test", {
+            nValue: nValue,  
+            mValue: mValue,
+        }).then((response)=> {
+            console.log(response);
+        });
+    };
+
     return (
         <div className = "Partionerator">
             <h1>WELCOME TO Partionerator</h1>
@@ -103,7 +113,7 @@ export const Home = (props) => {
                 if (active.length !== 0 && option.length !== 0) {
                     return (
                         <div className = "Generate">
-                        <Button> Generate </Button>
+                        <Button onClick={generate}> Generate </Button>
                         </div>
                     )
                 } else {
