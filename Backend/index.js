@@ -32,33 +32,34 @@ app.use(session({
 app.listen(process.env.PORT || 3001, () => {
   console.log('The application is running on localhost:3001!');
 });
-/* 
-app.post("/test", (req, res) => {
-    const initial_guess = req.body.initial_guess;
-    const tolerance = req.body.tolerance;
 
-    createModule().then(({ NewtonRaphson }) => {
-        // Perform computation
-        const newtonraphson = new NewtonRaphson(tolerance);
-        const root = newtonraphson.solve(initial_guess);
-
-        console.log(root);
-        res.send({ message: root });
-    });
-})
-*/
-
-app.post("/test",(req,res) =>{
+app.post("/RogersRamanujanCounter",(req,res) =>{
     const mValue = req.body.mValue;
     const nValue = req.body.nValue;
+    const kValue = 2;
   
     createModule().then(({RogersRamanujanCounter}) => {
         // Perform computation
         const rogersramanujancounter = new RogersRamanujanCounter();
-        const root = rogersramanujancounter.rrgc(mValue, nValue);
+        const root = rogersramanujancounter.rrgc(mValue, nValue, kValue);
 
         console.log(root);
         res.send({message: root});
      });
+})
+
+app.post("/RogersRamanujanGordonCounter",(req,res) =>{
+  const mValue = req.body.mValue;
+  const nValue = req.body.nValue;
+  const kValue = req.body.kValue;
+
+  createModule().then(({RogersRamanujanCounter}) => {
+      // Perform computation
+      const rogersramanujancounter = new RogersRamanujanCounter();
+      const root = rogersramanujancounter.rrgc(mValue, nValue, kValue);
+
+      console.log(root);
+      res.send({message: root});
+   });
 })
 

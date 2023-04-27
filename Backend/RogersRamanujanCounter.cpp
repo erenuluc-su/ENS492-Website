@@ -49,15 +49,15 @@ void RogersRamanujanCounter::show (vector<vector<vector<string>>>& table, unsign
     }
 }
 
-string RogersRamanujanCounter::rrgc(int m, int n){
-    unsigned long long int k = 2;
+string RogersRamanujanCounter::rrgc(int m, int n, int k){
+    unsigned long long int ll_k = (unsigned long long) k;
     unsigned long long int ll_n = (unsigned long long) n;
     unsigned long long int ll_m = (unsigned long long) m;
-    vector<vector<vector<string>>> table(k, vector<vector<string>>(ll_m, vector<string>(ll_n,"0"))); //initialize table with all values at 0
+    vector<vector<vector<string>>> table(ll_k, vector<vector<string>>(ll_m, vector<string>(ll_n,"0"))); //initialize table with all values at 0
     for(unsigned long long int j=1;j<=ll_n;j++){
         for(unsigned long long int i=1;i<=ll_m;i++){
-            for(unsigned long long int a=1;a<=k;a++){
-                RogersRamanujanCounter::operation(table,a,i,j,k); //edit table
+            for(unsigned long long int a=1;a<=ll_k;a++){
+                RogersRamanujanCounter::operation(table,a,i,j,ll_k); //edit table
             }
         }
     }

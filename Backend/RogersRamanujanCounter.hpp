@@ -6,7 +6,7 @@ using namespace std;
 class RogersRamanujanCounter {
   public:
     RogersRamanujanCounter();
-    string rrgc(int m, int n);
+    string rrgc(int m, int n, int k);
   
   private:
     void operation(vector<vector<vector<string>>>& table, unsigned long long a, unsigned long long m, unsigned long long n, unsigned long long k);

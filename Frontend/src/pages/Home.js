@@ -24,6 +24,7 @@ export const Home = (props) => {
     const [mValue, setMValue] = useState("");
     const [nValue, setNValue] = useState("");
     const [kValue, setKValue] = useState("");
+    const [result, setResult] = useState("");
 
     function ToggleGroupPartitions() {
         return (
@@ -65,15 +66,28 @@ export const Home = (props) => {
         setMValue("");
         setNValue("");
         setKValue("");
+        setResult("");
     }, [active]);
 
     const generate = () => {
-        Axios.post("http://localhost:3001/test", {
-            nValue: nValue,  
-            mValue: mValue,
-        }).then((response)=> {
-            console.log(response);
-        });
+        if (active === "Rogers Ramanujan" && option === "Counter") {
+            Axios.post("http://localhost:3001/RogersRamanujanCounter", {
+                nValue: nValue,  
+                mValue: mValue,
+            }).then((response)=> {
+                console.log(response);
+                setResult("There are "+ response.data.message +" partitions!");
+            });
+        } else if (active === "Rogers Ramanujan Gordon" && option === "Counter") {
+            Axios.post("http://localhost:3001/RogersRamanujanGordonCounter", {
+                nValue: nValue,  
+                mValue: mValue,
+                kValue: kValue,
+            }).then((response)=> {
+                console.log(response);
+                setResult("There are "+ response.data.message +" partitions!");
+            });
+        }
     };
 
     return (
@@ -124,6 +138,7 @@ export const Home = (props) => {
                 }
                 })()}
             </div>
+            <div> {result} </div>
             <Popup
                 trigger={<child-btns>Info</child-btns>}
                 position = "top left"
