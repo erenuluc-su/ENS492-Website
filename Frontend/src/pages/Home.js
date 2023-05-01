@@ -62,6 +62,24 @@ export const Home = (props) => {
         }
     }
 
+    function Warning() {
+        if (option === "Enumerator") {
+            return (
+                <div className= "Warning">
+                    <p>
+                        Once "Generate" button is pressed a .txt file will be downloaded.
+                    </p>
+                    <p>
+                        This file will include all the partitions.
+                    </p>
+                    <p>
+                        The file can also be opened with Microsoft Excel!
+                    </p>
+                </div>
+            );
+        }
+    }
+
     useEffect(() => {
         setMValue("");
         setNValue("");
@@ -86,6 +104,20 @@ export const Home = (props) => {
             }).then((response)=> {
                 console.log(response);
                 setResult("There are "+ response.data.message +" partitions!");
+            });
+        } else if (active === "Rogers Ramanujan Gordon" && option === "Enumerator") {
+            Axios.post("http://localhost:3001/RogersRamanujanGordonCounter", {
+                nValue: nValue,  
+                mValue: mValue,
+                kValue: kValue,
+            }).then((response)=> {
+                const fileData = JSON.stringify(response.data.message);
+                const blob = new Blob([fileData], { type: "text/plain" });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement("a");
+                link.download = "partitions.txt";
+                link.href = url;
+                link.click();
             });
         }
     };
@@ -138,6 +170,7 @@ export const Home = (props) => {
                 }
                 })()}
             </div>
+            <Warning />
             <div> {result} </div>
             <Popup
                 trigger={<child-btns>Info</child-btns>}
