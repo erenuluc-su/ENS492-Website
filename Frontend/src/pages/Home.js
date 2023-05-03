@@ -106,18 +106,34 @@ export const Home = (props) => {
                 setResult("There are "+ response.data.message +" partitions!");
             });
         } else if (active === "Rogers Ramanujan Gordon" && option === "Enumerator") {
-            Axios.post("http://localhost:3001/RogersRamanujanGordonCounter", {
+            Axios.post("http://localhost:3001/RogersRamanujanGordonEnumeration", {
                 nValue: nValue,  
                 mValue: mValue,
                 kValue: kValue,
             }).then((response)=> {
-                const fileData = JSON.stringify(response.data.message);
+                const fileData = JSON.stringify(response.data.data);
                 const blob = new Blob([fileData], { type: "text/plain" });
                 const url = URL.createObjectURL(blob);
                 const link = document.createElement("a");
                 link.download = "partitions.txt";
                 link.href = url;
                 link.click();
+                setResult(response.data.message);
+            });
+        } else if (active === "Rogers Ramanujan" && option === "Enumerator") {
+            Axios.post("http://localhost:3001/RogersRamanujanEnumeration", {
+                nValue: nValue,  
+                mValue: mValue,
+            }).then((response)=> {
+                let fileData = JSON.stringify(response.data.data);
+                fileData = fileData.slice(1, -2);
+                const blob = new Blob([fileData], { type: "text/plain" });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement("a");
+                link.download = "partitions.txt";
+                link.href = url;
+                link.click();
+                setResult(response.data.message);
             });
         }
     };

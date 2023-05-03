@@ -7,5 +7,8 @@ EMSCRIPTEN_BINDINGS(RogersRamanujanCounter) {
    class_<RogersRamanujanCounter>("RogersRamanujanCounter")
       .constructor()
       .function("rrgc", &RogersRamanujanCounter::rrgc)
+      .function("rr", &RogersRamanujanCounter::rr)
+      .function("getPartnum", &RogersRamanujanCounter::getPartnum)
+      .function("getPartitions", &RogersRamanujanCounter::getPartitions)
       ;
 }
