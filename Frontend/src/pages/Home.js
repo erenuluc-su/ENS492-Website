@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react"
 import styled from 'styled-components';
 import { Popup } from "semantic-ui-react";
 import Axios from 'axios'
+import * as FileSaver from 'file-saver'
+import XLSX from 'sheetjs-style'
 
 export const Home = (props) => {
 
@@ -25,6 +27,9 @@ export const Home = (props) => {
     const [nValue, setNValue] = useState("");
     const [kValue, setKValue] = useState("");
     const [result, setResult] = useState("");
+
+    const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+    const fileExtension = '.xlsx';
 
     function ToggleGroupPartitions() {
         return (
@@ -67,13 +72,10 @@ export const Home = (props) => {
             return (
                 <div className= "Warning">
                     <p>
-                        Once "Generate" button is pressed a .txt file will be downloaded.
+                        Once "Generate" button is pressed an Excel file will be downloaded.
                     </p>
                     <p>
                         This file will include all the partitions.
-                    </p>
-                    <p>
-                        The file can also be opened with Microsoft Excel!
                     </p>
                 </div>
             );
@@ -125,15 +127,25 @@ export const Home = (props) => {
                 nValue: nValue,  
                 mValue: mValue,
             }).then((response)=> {
-                let fileData = JSON.stringify(response.data.data);
+                console.log(response);
+                /*let fileData = JSON.stringify(response.data.data);
                 fileData = fileData.slice(1, -2);
-                const blob = new Blob([fileData], { type: "text/plain" });
+                const newText = fileData.split(',');*/
+                
+                const ws = XLSX.utils.json_to_sheet(response.data.data);
+                const wb = { Sheets: { 'data': ws }, SheetNames: ['data']};
+                const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array'});
+                const data = new Blob([excelBuffer], { type: fileType });
+                FileSaver.saveAs(data, 'partitions' + fileExtension);
+
+/*
+                const blob = new Blob([newText], { type: "text/plain" });
                 const url = URL.createObjectURL(blob);
                 const link = document.createElement("a");
                 link.download = "partitions.txt";
                 link.href = url;
                 link.click();
-                setResult(response.data.message);
+                setResult(response.data.message);*/
             });
         }
     };

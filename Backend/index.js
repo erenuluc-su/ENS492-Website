@@ -73,10 +73,21 @@ app.post("/RogersRamanujanEnumeration",(req,res) =>{
       const rogersramanujancounter = new RogersRamanujanCounter();
       rogersramanujancounter.rr(mValue, nValue, kValue);
       const root = rogersramanujancounter.getPartnum();
-      const data = rogersramanujancounter.getPartitions();
+      let data = rogersramanujancounter.getPartitions();
   
       console.log(root);
-      res.send({message: root, data: data});
+      data = data.slice(0, -1);
+      let newText = data.split(',');
+      let partition = [];
+      let part = {};
+
+      for (var i=0; i < newText.length; i++) {
+        part = {'Partitions':newText[i]};
+        partition.push(part);
+      }
+
+      res.send({message: root, data: partition});
+      //res.send({message: root, data: newText});
    });
 })
 
