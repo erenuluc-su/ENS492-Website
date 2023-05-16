@@ -24,6 +24,7 @@
     "semantic-ui-react": "^2.1.4",
     "sheetjs-style": "^0.15.8",
     "styled-components": "^5.3.9",
+    "systemjs": "^6.14.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -49,5 +50,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/react-native-simple-radio-button": "^2.7.2"
   }
 }

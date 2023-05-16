@@ -4,7 +4,6 @@ import { Popup } from "semantic-ui-react";
 import Axios from 'axios'
 import * as FileSaver from 'file-saver'
 import XLSX from 'sheetjs-style'
-
 export const Home = (props) => {
 
     const Button = styled.button``;
@@ -27,6 +26,7 @@ export const Home = (props) => {
     const [nValue, setNValue] = useState("");
     const [kValue, setKValue] = useState("");
     const [result, setResult] = useState("");
+    const [file, setFile] = useState("excel");
 
     const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
     const fileExtension = '.xlsx';
@@ -68,6 +68,7 @@ export const Home = (props) => {
     }
 
     function Warning() {
+        
         if (option === "Enumerator") {
             return (
                 <div className= "Warning">
@@ -87,7 +88,12 @@ export const Home = (props) => {
         setNValue("");
         setKValue("");
         setResult("");
+        setFile("");
     }, [active]);
+
+    const onOptionChange = e => {
+        setFile(e.target.value)
+      }
 
     const generate = () => {
         if (active === "Rogers Ramanujan" && option === "Counter") {
@@ -112,40 +118,53 @@ export const Home = (props) => {
                 nValue: nValue,  
                 mValue: mValue,
                 kValue: kValue,
+                file: file,
             }).then((response)=> {
-                const fileData = JSON.stringify(response.data.data);
-                const blob = new Blob([fileData], { type: "text/plain" });
-                const url = URL.createObjectURL(blob);
-                const link = document.createElement("a");
-                link.download = "partitions.txt";
-                link.href = url;
-                link.click();
+                console.log(response);
+                if (file === "text") {
+                    let fileData = JSON.stringify(response.data.data);
+                    fileData = fileData.replace(/,/g, '\n');
+                    const blob = new Blob([fileData], { type: "text/plain" });
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement("a");
+                    link.download = "partitions.txt";
+                    link.href = url;
+                    link.click();
+                }
+                else {
+                    const ws = XLSX.utils.json_to_sheet(response.data.data);
+                    const wb = { Sheets: { 'data': ws }, SheetNames: ['data']};
+                    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array'});
+                    const data = new Blob([excelBuffer], { type: fileType });
+                    FileSaver.saveAs(data, 'partitions' + fileExtension);
+                }
                 setResult(response.data.message);
             });
         } else if (active === "Rogers Ramanujan" && option === "Enumerator") {
             Axios.post("http://localhost:3001/RogersRamanujanEnumeration", {
                 nValue: nValue,  
                 mValue: mValue,
+                file: file,
             }).then((response)=> {
                 console.log(response);
-                /*let fileData = JSON.stringify(response.data.data);
-                fileData = fileData.slice(1, -2);
-                const newText = fileData.split(',');*/
-                
-                const ws = XLSX.utils.json_to_sheet(response.data.data);
-                const wb = { Sheets: { 'data': ws }, SheetNames: ['data']};
-                const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array'});
-                const data = new Blob([excelBuffer], { type: fileType });
-                FileSaver.saveAs(data, 'partitions' + fileExtension);
-
-/*
-                const blob = new Blob([newText], { type: "text/plain" });
-                const url = URL.createObjectURL(blob);
-                const link = document.createElement("a");
-                link.download = "partitions.txt";
-                link.href = url;
-                link.click();
-                setResult(response.data.message);*/
+                if (file === "text") {
+                    let fileData = JSON.stringify(response.data.data);
+                    fileData = fileData.replace(/,/g, '\n');
+                    const blob = new Blob([fileData], { type: "text/plain" });
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement("a");
+                    link.download = "partitions.txt";
+                    link.href = url;
+                    link.click();
+                }
+                else {
+                    const ws = XLSX.utils.json_to_sheet(response.data.data);
+                    const wb = { Sheets: { 'data': ws }, SheetNames: ['data']};
+                    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array'});
+                    const data = new Blob([excelBuffer], { type: fileType });
+                    FileSaver.saveAs(data, 'partitions' + fileExtension);
+                }
+                setResult(response.data.message);
             });
         }
     };
@@ -177,6 +196,31 @@ export const Home = (props) => {
                         <div className = "Capparelli\'s Identity">
                         <input type="text" value = {mValue} onChange={(e) => setMValue(e.target.value)} placeholder = "Write the value of m here!" />
                         <input type="text" value = {nValue} onChange={(e) => setNValue(e.target.value)} placeholder = "Write the value of n here!" />
+                        </div>
+                    )
+                }
+                })()}
+            </div>
+            <div>
+                {(() => {
+                if (option === "Enumerator") {
+                    return (
+                        <div className = "File">
+                            <div>
+                                <input className = "radioinput" type="radio" value="excel" name="file" checked={file === "excel"}
+                                    onChange={onOptionChange} id="excel"/>
+                                <label htmlFor="excel">Excel File</label>
+                            </div>
+                            <div>
+                                <input className = "radioinput" type="radio" value="text" name="file" checked={file === "text"}
+                                    onChange={onOptionChange} id="text"/>
+                                <label htmlFor="text">Text File</label>
+                            </div>
+                        </div>
+                    )
+                } else {
+                    return (
+                        <div className = "NoFile">
                         </div>
                     )
                 }
