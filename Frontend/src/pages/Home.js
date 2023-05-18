@@ -110,7 +110,7 @@ export const Home = (props) => {
       }
 
     const generate = () => {
-        if (active === "Rogers Ramanujan" && option === "Counter" && (mValue !== "" || nValue !== "")) {
+        if (active === "Rogers Ramanujan" && option === "Counter" && (mValue !== "" && nValue !== "")) {
             Axios.post("http://localhost:3001/RogersRamanujanCounter", {
                 nValue: nValue,  
                 mValue: mValue,
@@ -118,7 +118,7 @@ export const Home = (props) => {
                 console.log(response);
                 setResult("There are "+ response.data.message +" partitions!");
             });
-        } else if (active === "Rogers Ramanujan Gordon" && option === "Counter" && (mValue !== "" || nValue !== "" || kValue !== "")) {
+        } else if (active === "Rogers Ramanujan Gordon" && option === "Counter" && (mValue !== "" && nValue !== "" && kValue !== "")) {
             Axios.post("http://localhost:3001/RogersRamanujanGordonCounter", {
                 nValue: nValue,  
                 mValue: mValue,
@@ -127,7 +127,7 @@ export const Home = (props) => {
                 console.log(response);
                 setResult("There are "+ response.data.message +" partitions!");
             });
-        } else if (active === "Rogers Ramanujan Gordon" && option === "Enumerator" && (mValue !== "" || nValue !== "" || kValue !== "") 
+        } else if (active === "Rogers Ramanujan Gordon" && option === "Enumerator" && (mValue !== "" && nValue !== "" && kValue !== "") 
             && file !== "") {
             Axios.post("http://localhost:3001/RogersRamanujanGordonEnumeration", {
                 nValue: nValue,  
@@ -155,8 +155,42 @@ export const Home = (props) => {
                 }
                 setResult(response.data.message);
             });
-        } else if (active === "Rogers Ramanujan" && option === "Enumerator" && (mValue !== "" || nValue !== "") && file !== "") {
+        } else if (active === "Rogers Ramanujan" && option === "Enumerator" && (mValue !== "" && nValue !== "") && file !== "") {
             Axios.post("http://localhost:3001/RogersRamanujanEnumeration", {
+                nValue: nValue,  
+                mValue: mValue,
+                file: file,
+            }).then((response)=> {
+                console.log(response);
+                if (file === "text") {
+                    let fileData = JSON.stringify(response.data.data);
+                    fileData = fileData.replace(/,/g, '\n');
+                    const blob = new Blob([fileData], { type: "text/plain" });
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement("a");
+                    link.download = "partitions.txt";
+                    link.href = url;
+                    link.click();
+                }
+                else {
+                    const ws = XLSX.utils.json_to_sheet(response.data.data);
+                    const wb = { Sheets: { 'data': ws }, SheetNames: ['data']};
+                    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array'});
+                    const data = new Blob([excelBuffer], { type: fileType });
+                    FileSaver.saveAs(data, 'partitions' + fileExtension);
+                }
+                setResult(response.data.message);
+            });
+        } else if (active === "Capparelli's Identity" && option === "Counter" && (mValue !== "" && nValue !== "")) {
+            Axios.post("http://localhost:3001/CapparelliCounter", {
+                nValue: nValue,  
+                mValue: mValue,
+            }).then((response)=> {
+                console.log(response);
+                setResult("There are "+ response.data.message +" partitions!");
+            });
+        } else if (active === "Capparelli's Identity" && option === "Enumerator" && (mValue !== "" && nValue !== "") && file !== "") {
+            Axios.post("http://localhost:3001/CapparelliEnumeration", {
                 nValue: nValue,  
                 mValue: mValue,
                 file: file,

@@ -140,3 +140,52 @@ createModule().then(({RogersRamanujanCounter}) => {
     res.send({message: root, data: partition});
  });
 })
+
+app.post("/CapparelliCounter",(req,res) =>{
+  const mValue = req.body.mValue;
+  const nValue = req.body.nValue;
+
+  createModule().then(({RogersRamanujanCounter}) => {
+      // Perform computation
+      const rogersramanujancounter = new RogersRamanujanCounter();
+      const root = rogersramanujancounter.cic(mValue, nValue);
+
+      console.log(root);
+      res.send({message: root});
+   });
+})
+
+app.post("/CapparelliEnumeration",(req,res) =>{
+  const mValue = req.body.mValue;
+  const nValue = req.body.nValue;
+  const file = req.body.file;
+
+  createModule().then(({RogersRamanujanCounter}) => {
+      // Perform computation
+      const rogersramanujancounter = new RogersRamanujanCounter();
+      rogersramanujancounter.cie(mValue, nValue);
+      const root = rogersramanujancounter.getPartnum();
+      let data = rogersramanujancounter.getPartitions();
+  
+      console.log(root);
+      data = data.slice(0, -1);
+      let newText = data.split(',');
+      let partition = [];
+      let part = {};
+
+      if (file === "text") {
+        for (var i=0; i < newText.length; i++) {
+          part = [newText[i]];
+          partition.push(part);
+        }
+      }
+      else {
+        for (var i=0; i < newText.length; i++) {
+          part = {'Partitions':newText[i]};
+          partition.push(part);
+        }
+      }
+
+      res.send({message: root, data: partition});
+   });
+})

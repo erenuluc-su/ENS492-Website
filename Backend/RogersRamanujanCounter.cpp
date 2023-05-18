@@ -258,3 +258,199 @@ string RogersRamanujanCounter::getPartitions(){
 string RogersRamanujanCounter::getPartnum(){
     return partnum;
 }
+
+void RogersRamanujanCounter::capconoperation(vector<vector<vector<int>>>& table, int a, int m, int n){ //edits one value on the table
+    if((a>n && n!=0) || (m!=0 && n==0) || (m==0 && n!=0) || (n==1)){
+        table[a-1][m][n] = 0; //zero case
+        return;
+    }
+    if(m==1 || (m==0 && n==0)){
+        table[a-1][m][n] = 1; //one case
+        return;
+    }
+    int num1,num2,num3;
+    if(a == 2){ //if a = 2
+        if(m-2 < 0 || n-6*m+6 < 0){
+            num2 = 0;
+        }
+        else{
+            num2 = table[1][m-2][n-6*m+6];
+        }
+        if(m-1 < 0 || n-3*m+1 < 0){
+            num3 = 0;
+        }
+        else{
+            num3 = table[2][m-1][n-3*m+1];
+        }
+        table[a-1][m][n] = table[2][m][n] + num2 + num3;
+        return;
+    }
+    if(a == 3){ //if a = 3
+        if(m-1 < 0 || n-3*m < 0){
+            num2 = 0;
+        }
+        else{
+            num2 = table[2][m-1][n-3*m];
+        }
+        table[a-1][m][n] = table[3][m][n] + num2;
+        return;
+    }
+    if(a == 4){ //if a = 4
+        if(n-3*m < 0){
+            num1 = 0;
+        }
+        else{
+            num1 = table[1][m][n-3*m];
+        }
+        if(m-1 < 0 || n-6*m+2 < 0){
+            num2 = 0;
+        }
+        else{
+            num2 = table[1][m-1][n-6*m+2];
+        }
+        table[a-1][m][n] = num1 + num2;
+        return;
+    }
+}
+
+int RogersRamanujanCounter::cic(int m, int n){
+    int a = 4;
+    vector<vector<vector<int>>> table(a, vector<vector<int>>(m+1, vector<int>(n+1,9999))); //initialize table with all values at 0
+    for(int k=0;k<=n;k++){
+        for(int i=0;i<=m;i++){
+            for(int j=a;j>=2;j--){
+                RogersRamanujanCounter::capconoperation(table,j,i,k); //edit table
+                if(j == 2 && i == m && k == n){
+                    return table[1][m][n]; //returns the correct element of the table
+                }
+            }
+        }
+    }
+    return 0;
+}
+
+void RogersRamanujanCounter::print_partitions(vector<vector<int>> partition){
+    for(int i=0;i<partition.size();i++){
+        for(int j=0;j<partition[i].size();j++){
+            partitions += to_string(partition[i][j]);
+            if(j+1 != partition[i].size()){
+                partitions += "+";
+            }
+        }
+        partitions += ",";
+    }
+}
+
+void RogersRamanujanCounter::capemoperation(vector<vector<vector<vector<vector<int>>>>>& table, int a, int m, int n){ //edits one value on the table
+    //a, m and n corresponds to a-1, m and n on the table
+    if((a>n && n!=0) || (m!=0 && n==0) || (m==0 && n!=0) || (n==1)){
+        table[a-1][m][n]; //zero case
+        return;
+    }
+    vector<int> temp;
+    if(m==1 || (m==0 && n==0)){
+        temp.push_back(n);
+        table[a-1][m][n].push_back(temp); //one case
+        return;
+    }
+    int num1,num2,num3;
+    if(a == 2){ //if a = 2
+        if(m-2 < 0 || n-6*m+6 < 0){
+            num2 = 0;
+        }
+        else{
+            for(int i=0;i<table[1][m-2][n-6*m+6].size();i++){ //add num2
+                temp.clear();
+                temp.push_back(2); //add 2
+                temp.push_back(4); //add 4
+                for(int j=0;j<table[1][m-2][n-6*m+6][i].size();j++){
+                    if(table[1][m-2][n-6*m+6][i][j] != 0){
+                        temp.push_back(table[1][m-2][n-6*m+6][i][j]+6); //increase all numbers by 6
+                    }
+                }
+                table[a-1][m][n].push_back(temp);
+            }
+        }
+        if(m-1 < 0 || n-3*m+1 < 0){
+            num3 = 0;
+        }
+        else{
+            for(int i=0;i<table[2][m-1][n-3*m+1].size();i++){ //add num3
+                temp.clear();
+                temp.push_back(2); //add 2
+                for(int j=0;j<table[2][m-1][n-3*m+1][i].size();j++){
+                    temp.push_back(table[2][m-1][n-3*m+1][i][j]+3); //increase all numbers by 3
+                }
+                table[a-1][m][n].push_back(temp);
+            }
+        }
+        for(int i=0;i<table[2][m][n].size();i++){ //add num1
+            table[a-1][m][n].push_back(table[2][m][n][i]);
+        }
+        return;
+    }
+    if(a == 3){ //if a = 3
+        if(m-1 < 0 || n-3*m < 0){
+            num2 = 0;
+        }
+        else{
+            for(int i=0;i<table[2][m-1][n-3*m].size();i++){ //add num2
+                temp.clear();
+                temp.push_back(3); //add 3
+                for(int j=0;j<table[2][m-1][n-3*m][i].size();j++){
+                    temp.push_back(table[2][m-1][n-3*m][i][j]+3); //increase all numbers by 3
+                }
+                table[a-1][m][n].push_back(temp);
+            }
+        }
+        for(int i=0;i<table[3][m][n].size();i++){ //add num1
+            table[a-1][m][n].push_back(table[3][m][n][i]);
+        }
+        return;
+    }
+    if(a == 4){ //if a = 4
+        if(n-3*m < 0){
+            num1 = 0;
+        }
+        else{
+            for(int i=0;i<table[1][m][n-3*m].size();i++){ //add num1
+                temp.clear();
+                for(int j=0;j<table[1][m][n-3*m][i].size();j++){
+                    temp.push_back(table[1][m][n-3*m][i][j]+3); //increase all numbers by 3
+                }
+                table[a-1][m][n].push_back(temp);
+            }
+        }
+        if(m-1 < 0 || n-6*m+2 < 0){
+            num2 = 0;
+        }
+        else{
+            for(int i=0;i<table[1][m-1][n-6*m+2].size();i++){ //add num2
+                temp.clear();
+                temp.push_back(4); //add 4
+                for(int j=0;j<table[1][m-1][n-6*m+2][i].size();j++){
+                    temp.push_back(table[1][m-1][n-6*m+2][i][j]+6); //increase all numbers by 6
+                }
+                table[a-1][m][n].push_back(temp);
+            }
+        }
+        return;
+    }
+}
+
+void RogersRamanujanCounter::cie(int m, int n){
+    int a = 4;
+    vector<vector<vector<vector<vector<int>>>>> table(a, vector<vector<vector<vector<int>>>>(m+1, vector<vector<vector<int>>>(n+1, vector<vector<int>>(0, vector<int>())))); //initialize table with all values being empty strings
+    for(int k=0;k<=n;k++){
+        for(int i=0;i<=m;i++){
+            for(int j=a;j>=2;j--){
+                //cout<<"a"<<endl;
+                RogersRamanujanCounter::capemoperation(table,j,i,k); //edit table
+                if(j == 2 && i == m && k == n){
+                    RogersRamanujanCounter::print_partitions(table[1][m][n]);
+                    partnum = "There are a total of "+to_string(table[1][m][n].size())+" partitions.";
+                }
+            }
+        }
+    }
+}
