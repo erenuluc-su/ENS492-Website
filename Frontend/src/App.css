@@ -109,6 +109,10 @@ input {
   width: 4cm;
 }
 
+.radioinput {
+  width: 0.2cm;
+}
+
 child-btns{
   margin-top: 20%;
   bottom: 6px;
