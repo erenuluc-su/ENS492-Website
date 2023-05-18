@@ -5,6 +5,12 @@ const cookieparser = require("cookie-parser");
 const session = require("express-session");
 const createModule = require("./RogersRamanujanCounter.js");
 
+const memory = new WebAssembly.Memory({
+  initial: 256,
+  maximum: 256
+});
+const heap = new Uint8Array(memory.buffer);
+
 require("dotenv").config();
 
 const app = express();

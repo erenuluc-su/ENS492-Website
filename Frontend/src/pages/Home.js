@@ -26,7 +26,7 @@ export const Home = (props) => {
     const [nValue, setNValue] = useState("");
     const [kValue, setKValue] = useState("");
     const [result, setResult] = useState("");
-    const [file, setFile] = useState("excel");
+    const [file, setFile] = useState("");
 
     const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
     const fileExtension = '.xlsx';
@@ -68,19 +68,33 @@ export const Home = (props) => {
     }
 
     function Warning() {
-        
-        if (option === "Enumerator") {
-            return (
-                <div className= "Warning">
-                    <p>
-                        Once "Generate" button is pressed an Excel file will be downloaded.
-                    </p>
-                    <p>
-                        This file will include all the partitions.
-                    </p>
+        return (
+            <div className = "Warning">
+                <div>
+                    {(() => {
+                    if (active === "Rogers Ramanujan Gordon" && option.length !== 0 && (mValue === "" || nValue === "" || kValue === "")) {
+                        return (
+                            <p>
+                                Please enter an integer for every input value!
+                            </p>
+                        )
+                    } else if ((active === "Rogers Ramanujan" || active === "Capparelli's Identity") && option.length !== 0 && (mValue === "" || nValue === "")) {
+                        return (
+                            <p>
+                                Please enter an integer for every input value!
+                            </p>
+                        )
+                    } else if (option === "Enumerator" && file === "") {
+                        return (
+                            <p>
+                                Please select a file type!
+                            </p>
+                        )
+                    }
+                    })()}
                 </div>
-            );
-        }
+            </div>
+        )
     }
 
     useEffect(() => {
@@ -96,7 +110,7 @@ export const Home = (props) => {
       }
 
     const generate = () => {
-        if (active === "Rogers Ramanujan" && option === "Counter") {
+        if (active === "Rogers Ramanujan" && option === "Counter" && (mValue !== "" || nValue !== "")) {
             Axios.post("http://localhost:3001/RogersRamanujanCounter", {
                 nValue: nValue,  
                 mValue: mValue,
@@ -104,7 +118,7 @@ export const Home = (props) => {
                 console.log(response);
                 setResult("There are "+ response.data.message +" partitions!");
             });
-        } else if (active === "Rogers Ramanujan Gordon" && option === "Counter") {
+        } else if (active === "Rogers Ramanujan Gordon" && option === "Counter" && (mValue !== "" || nValue !== "" || kValue !== "")) {
             Axios.post("http://localhost:3001/RogersRamanujanGordonCounter", {
                 nValue: nValue,  
                 mValue: mValue,
@@ -113,7 +127,8 @@ export const Home = (props) => {
                 console.log(response);
                 setResult("There are "+ response.data.message +" partitions!");
             });
-        } else if (active === "Rogers Ramanujan Gordon" && option === "Enumerator") {
+        } else if (active === "Rogers Ramanujan Gordon" && option === "Enumerator" && (mValue !== "" || nValue !== "" || kValue !== "") 
+            && file !== "") {
             Axios.post("http://localhost:3001/RogersRamanujanGordonEnumeration", {
                 nValue: nValue,  
                 mValue: mValue,
@@ -140,7 +155,7 @@ export const Home = (props) => {
                 }
                 setResult(response.data.message);
             });
-        } else if (active === "Rogers Ramanujan" && option === "Enumerator") {
+        } else if (active === "Rogers Ramanujan" && option === "Enumerator" && (mValue !== "" || nValue !== "") && file !== "") {
             Axios.post("http://localhost:3001/RogersRamanujanEnumeration", {
                 nValue: nValue,  
                 mValue: mValue,
@@ -179,23 +194,30 @@ export const Home = (props) => {
                 if (active === "Rogers Ramanujan" && option.length !== 0) {
                     return (
                         <div className = "Rogers Ramanujan">
-                        <input type="text" value = {mValue} onChange={(e) => setMValue(e.target.value)} placeholder = "Write the value of m here!" />
-                        <input type="text" value = {nValue} onChange={(e) => setNValue(e.target.value)} placeholder = "Write the value of n here!" />
+                        <input type="text" value = {mValue} onChange={(e) => setMValue(e.target.value)} 
+                            placeholder = "Write the value of m here!" />
+                        <input type="text" value = {nValue} onChange={(e) => setNValue(e.target.value)} 
+                            placeholder = "Write the value of n here!" />
                         </div>
                     )
                 } else if (active === "Rogers Ramanujan Gordon" && option.length !== 0) {
                     return (
                         <div className = "Roger Ramanujan Gordon">
-                        <input type="text" value = {mValue} onChange={(e) => setMValue(e.target.value)} placeholder = "Write the value of m here!" />
-                        <input type="text" value = {nValue} onChange={(e) => setNValue(e.target.value)} placeholder = "Write the value of n here!" />
-                        <input type="text" value = {kValue} onChange={(e) => setKValue(e.target.value)} placeholder = "Write the value of k here!" />
+                        <input type="text" value = {mValue} onChange={(e) => setMValue(e.target.value)} 
+                            placeholder = "Write the value of m here!" />
+                        <input type="text" value = {nValue} onChange={(e) => setNValue(e.target.value)} 
+                            placeholder = "Write the value of n here!" />
+                        <input type="text" value = {kValue} onChange={(e) => setKValue(e.target.value)} 
+                            placeholder = "Write the value of k here!" />
                         </div>
                     )
                 } else if (active === "Capparelli's Identity" && option.length !== 0) {
                     return (
                         <div className = "Capparelli\'s Identity">
-                        <input type="text" value = {mValue} onChange={(e) => setMValue(e.target.value)} placeholder = "Write the value of m here!" />
-                        <input type="text" value = {nValue} onChange={(e) => setNValue(e.target.value)} placeholder = "Write the value of n here!" />
+                        <input type="text" value = {mValue} onChange={(e) => setMValue(e.target.value)} 
+                            placeholder = "Write the value of m here!" />
+                        <input type="text" value = {nValue} onChange={(e) => setNValue(e.target.value)} 
+                            placeholder = "Write the value of n here!" />
                         </div>
                     )
                 }
@@ -249,7 +271,8 @@ export const Home = (props) => {
                 position = "top left"
                 style={{ color: 'white' }}
             >
-                "Partionerator" is a web application that enables users to efficiently generate a range of partition (Rogers Ramanujan, Rogers Ramanujan Gordon, Capparelli's Identity and X) enumeration and counting methods. 
+                "Partionerator" is a web application that enables users to efficiently generate a range of partition 
+                (Rogers Ramanujan, Rogers Ramanujan Gordon, Capparelli's Identity and X) enumeration and counting methods. 
             </Popup>
         </div>
     );
