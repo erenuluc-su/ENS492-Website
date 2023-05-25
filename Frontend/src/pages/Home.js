@@ -27,6 +27,7 @@ export const Home = (props) => {
     const [kValue, setKValue] = useState("");
     const [result, setResult] = useState("");
     const [file, setFile] = useState("");
+    const [format, setFormat] = useState(false);
 
     const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
     const fileExtension = '.xlsx';
@@ -84,7 +85,7 @@ export const Home = (props) => {
                                 Please enter an integer for every input value!
                             </p>
                         )
-                    } else if (option === "Enumerator" && file === "") {
+                    } else if (file === "") {
                         return (
                             <p>
                                 Please select a file type!
@@ -103,11 +104,27 @@ export const Home = (props) => {
         setKValue("");
         setResult("");
         setFile("");
+        setFormat(false);
     }, [active]);
 
     const onOptionChange = e => {
         setFile(e.target.value)
-      }
+    }
+
+    const ec = (r, c) => {
+        return XLSX.utils.encode_cell({r:r,c:c})
+    }
+    
+    const delete_row = (ws, row_index) => {
+        let range = XLSX.utils.decode_range(ws["!ref"])
+        for(var R = row_index; R < range.e.r; ++R){
+            for(var C = range.s.c; C <= range.e.c; ++C){
+                ws[ec(R, C)] = ws[ec(R+1, C)]
+            }
+        }
+        range.e.r--
+        ws['!ref'] = XLSX.utils.encode_range(range.s, range.e)
+    }
 
     const generate = () => {
         if (active === "Rogers Ramanujan" && option === "Counter" && (mValue !== "" && nValue !== "")) {
@@ -181,16 +198,8 @@ export const Home = (props) => {
                 }
                 setResult(response.data.message);
             });
-        } else if (active === "Capparelli's Identity" && option === "Counter" && (mValue !== "" && nValue !== "")) {
+        } else if (active === "Capparelli's Identity" && option === "Counter" && (mValue !== "" && nValue !== "") && file !== "") {
             Axios.post("http://localhost:3001/CapparelliCounter", {
-                nValue: nValue,  
-                mValue: mValue,
-            }).then((response)=> {
-                console.log(response);
-                setResult("There are "+ response.data.message +" partitions!");
-            });
-        } else if (active === "Capparelli's Identity" && option === "Enumerator" && (mValue !== "" && nValue !== "") && file !== "") {
-            Axios.post("http://localhost:3001/CapparelliEnumeration", {
                 nValue: nValue,  
                 mValue: mValue,
                 file: file,
@@ -199,6 +208,10 @@ export const Home = (props) => {
                 if (file === "text") {
                     let fileData = JSON.stringify(response.data.data);
                     fileData = fileData.replace(/,/g, '\n');
+                    fileData = fileData.replace(/;/g, ' ');
+                    fileData = fileData.replace(/\[/g, '');
+                    fileData = fileData.replace(/]/g, '');
+                    fileData = fileData.replace(/"/g, '');
                     const blob = new Blob([fileData], { type: "text/plain" });
                     const url = URL.createObjectURL(blob);
                     const link = document.createElement("a");
@@ -207,7 +220,40 @@ export const Home = (props) => {
                     link.click();
                 }
                 else {
-                    const ws = XLSX.utils.json_to_sheet(response.data.data);
+                    let ws = XLSX.utils.json_to_sheet(response.data.data);
+                    delete_row(ws, 0);
+                    const wb = { Sheets: { 'data': ws }, SheetNames: ['data']};
+                    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array'});
+                    const data = new Blob([excelBuffer], { type: fileType });
+                    FileSaver.saveAs(data, 'partitions' + fileExtension);
+                }
+                setResult("There are "+ response.data.message +" partitions!");
+            });
+        } else if (active === "Capparelli's Identity" && option === "Enumerator" && (mValue !== "" && nValue !== "") && file !== "") {
+            Axios.post("http://localhost:3001/CapparelliEnumeration", {
+                nValue: nValue,  
+                mValue: mValue,
+                file: file,
+                format: format,
+            }).then((response)=> {
+                console.log(response);
+                if (file === "text") {
+                    let fileData = JSON.stringify(response.data.data);
+                    fileData = fileData.replace(/,/g, '\n');
+                    fileData = fileData.replace(/;/g, ' ');
+                    fileData = fileData.replace(/\[/g, '');
+                    fileData = fileData.replace(/]/g, '');
+                    fileData = fileData.replace(/"/g, '');
+                    const blob = new Blob([fileData], { type: "text/plain" });
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement("a");
+                    link.download = "partitions.txt";
+                    link.href = url;
+                    link.click();
+                }
+                else {
+                    let ws = XLSX.utils.json_to_sheet(response.data.data);
+                    delete_row(ws, 0);
                     const wb = { Sheets: { 'data': ws }, SheetNames: ['data']};
                     const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array'});
                     const data = new Blob([excelBuffer], { type: fileType });
@@ -261,7 +307,7 @@ export const Home = (props) => {
                 {(() => {
                 if (option === "Enumerator") {
                     return (
-                        <div className = "File">
+                        <div className = "Format">
                             <div>
                                 <input className = "radioinput" type="radio" value="excel" name="file" checked={file === "excel"}
                                     onChange={onOptionChange} id="excel"/>
@@ -272,11 +318,26 @@ export const Home = (props) => {
                                     onChange={onOptionChange} id="text"/>
                                 <label htmlFor="text">Text File</label>
                             </div>
+                            <div>
+                                <input className = "radioinput" type="checkbox" checked={format}
+                                    onChange={() => setFormat((prev) => !prev)}/>
+                                <label htmlFor="multiple">Seperate part of partitions</label>
+                            </div>
                         </div>
                     )
                 } else {
                     return (
-                        <div className = "NoFile">
+                        <div className = "NoFormat">
+                            <div>
+                                <input className = "radioinput" type="radio" value="excel" name="file" checked={file === "excel"}
+                                    onChange={onOptionChange} id="excel"/>
+                                <label htmlFor="excel">Excel File</label>
+                            </div>
+                            <div>
+                                <input className = "radioinput" type="radio" value="text" name="file" checked={file === "text"}
+                                    onChange={onOptionChange} id="text"/>
+                                <label htmlFor="text">Text File</label>
+                            </div>
                         </div>
                     )
                 }

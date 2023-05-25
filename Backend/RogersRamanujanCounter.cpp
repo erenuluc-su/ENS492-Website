@@ -321,6 +321,7 @@ int RogersRamanujanCounter::cic(int m, int n){
             for(int j=a;j>=2;j--){
                 RogersRamanujanCounter::capconoperation(table,j,i,k); //edit table
                 if(j == 2 && i == m && k == n){
+                    RogersRamanujanCounter::showcap(table, m, n);
                     return table[1][m][n]; //returns the correct element of the table
                 }
             }
@@ -329,15 +330,28 @@ int RogersRamanujanCounter::cic(int m, int n){
     return 0;
 }
 
-void RogersRamanujanCounter::print_partitions(vector<vector<int>> partition){
-    for(int i=0;i<partition.size();i++){
-        for(int j=0;j<partition[i].size();j++){
-            partitions += to_string(partition[i][j]);
-            if(j+1 != partition[i].size()){
-                partitions += "+";
+void RogersRamanujanCounter::print_partitions(vector<vector<int>> partition, bool format){
+    if (format){
+        for(int i=0;i<partition.size();i++){
+            for(int j=0;j<partition[i].size();j++){
+                partitions += to_string(partition[i][j]);
+                if(j+1 != partition[i].size()){
+                    partitions += ";+;";
+                }
             }
+            partitions += ",";
         }
-        partitions += ",";
+    }
+    else{
+        for(int i=0;i<partition.size();i++){
+            for(int j=0;j<partition[i].size();j++){
+                partitions += to_string(partition[i][j]);
+                if(j+1 != partition[i].size()){
+                    partitions += "+";
+                }
+            }
+            partitions += ",";
+        }
     }
 }
 
@@ -438,7 +452,7 @@ void RogersRamanujanCounter::capemoperation(vector<vector<vector<vector<vector<i
     }
 }
 
-void RogersRamanujanCounter::cie(int m, int n){
+void RogersRamanujanCounter::cie(int m, int n, bool format){
     int a = 4;
     vector<vector<vector<vector<vector<int>>>>> table(a, vector<vector<vector<vector<int>>>>(m+1, vector<vector<vector<int>>>(n+1, vector<vector<int>>(0, vector<int>())))); //initialize table with all values being empty strings
     for(int k=0;k<=n;k++){
@@ -447,10 +461,24 @@ void RogersRamanujanCounter::cie(int m, int n){
                 //cout<<"a"<<endl;
                 RogersRamanujanCounter::capemoperation(table,j,i,k); //edit table
                 if(j == 2 && i == m && k == n){
-                    RogersRamanujanCounter::print_partitions(table[1][m][n]);
+                    RogersRamanujanCounter::print_partitions(table[1][m][n], format);
                     partnum = "There are a total of "+to_string(table[1][m][n].size())+" partitions.";
                 }
             }
         }
+    }
+}
+
+void RogersRamanujanCounter::showcap(vector<vector<vector<int>>>& table, unsigned long long m, unsigned long long n){
+    for(unsigned long long i=1; i<4; i++){
+        partitions += "A = " + to_string(i) + ",";
+        for(unsigned long long x=0;x<m;x++){
+            for(unsigned long long y=0;y<n;y++)
+            {
+                partitions += to_string(table[i][x][y]) + " ";  // display the current element out of the array
+            }
+            partitions += ",";  // when the inner loop is done, go to a new line
+        }
+        partitions += ",";
     }
 }

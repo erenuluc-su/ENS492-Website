@@ -11,7 +11,7 @@ class RogersRamanujanCounter {
     string getPartitions();
     string getPartnum();
     int cic(int m, int n);
-    void cie(int m, int n);
+    void cie(int m, int n, bool format);
   
   private:
     void operation(vector<vector<vector<string>>>& table, unsigned long long a, unsigned long long m, unsigned long long n, unsigned long long k);
@@ -21,8 +21,10 @@ class RogersRamanujanCounter {
     int sum_vector(vector<int> nums);
     bool phase_zero_k_check(vector<int> nums, int k);
     void capconoperation(vector<vector<vector<int>>>& table, int a, int m, int n);
-    void print_partitions(vector<vector<int>> partitions);
+    void print_partitions(vector<vector<int>> partitions, bool format);
     void capemoperation(vector<vector<vector<vector<vector<int>>>>>& table, int a, int m, int n);
+    void showcap(vector<vector<vector<int>>>& table, unsigned long long m, unsigned long long n);
+    
     string partitions;
     string partnum;
 };

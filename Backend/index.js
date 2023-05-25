@@ -144,34 +144,18 @@ createModule().then(({RogersRamanujanCounter}) => {
 app.post("/CapparelliCounter",(req,res) =>{
   const mValue = req.body.mValue;
   const nValue = req.body.nValue;
-
-  createModule().then(({RogersRamanujanCounter}) => {
-      // Perform computation
-      const rogersramanujancounter = new RogersRamanujanCounter();
-      const root = rogersramanujancounter.cic(mValue, nValue);
-
-      console.log(root);
-      res.send({message: root});
-   });
-})
-
-app.post("/CapparelliEnumeration",(req,res) =>{
-  const mValue = req.body.mValue;
-  const nValue = req.body.nValue;
   const file = req.body.file;
 
   createModule().then(({RogersRamanujanCounter}) => {
       // Perform computation
       const rogersramanujancounter = new RogersRamanujanCounter();
-      rogersramanujancounter.cie(mValue, nValue);
-      const root = rogersramanujancounter.getPartnum();
+      const root = rogersramanujancounter.cic(mValue, nValue);
       let data = rogersramanujancounter.getPartitions();
-  
-      console.log(root);
-      data = data.slice(0, -1);
+
       let newText = data.split(',');
       let partition = [];
-      let part = {};
+      let part = [];
+      let parts = [];
 
       if (file === "text") {
         for (var i=0; i < newText.length; i++) {
@@ -181,11 +165,64 @@ app.post("/CapparelliEnumeration",(req,res) =>{
       }
       else {
         for (var i=0; i < newText.length; i++) {
-          part = {'Partitions':newText[i]};
+          parts = newText[i].split(' ');
+          for (var j=0; j < parts.length; j++) {
+            part.push(parts[j]);
+          }
+          partition.push(part);
+          part = [];
+          parts = [];
+        }
+      }
+      res.send({message: root, data: partition});
+   });
+})
+
+app.post("/CapparelliEnumeration",(req,res) =>{
+  const mValue = req.body.mValue;
+  const nValue = req.body.nValue;
+  const file = req.body.file;
+  const format = req.body.format
+
+  createModule().then(({RogersRamanujanCounter}) => {
+      // Perform computation
+      const rogersramanujancounter = new RogersRamanujanCounter();
+      rogersramanujancounter.cie(mValue, nValue, format);
+      const root = rogersramanujancounter.getPartnum();
+      let data = rogersramanujancounter.getPartitions();
+  
+      console.log(root);
+      data = data.slice(0, -1);
+      let newText = data.split(',');
+      let partition = [];
+      let part = [];
+      let parts = [];
+
+      if (file === "text") {
+        for (var i=0; i < newText.length; i++) {
+          part = [newText[i]];
           partition.push(part);
         }
       }
-
+      else {
+        if (format === true){
+          for (var i=0; i < newText.length; i++) {
+            parts = newText[i].split(';');
+            for (var j=0; j < parts.length; j++) {
+              part.push(parts[j]);
+            }
+            partition.push(part);
+            part = [];
+            parts = [];
+          }
+        }
+        else{
+          for (var i=0; i < newText.length; i++) {
+            part = {'Partitions':newText[i]};
+            partition.push(part);
+          }
+        }
+      }
       res.send({message: root, data: partition});
    });
 })
