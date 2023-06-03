@@ -131,22 +131,35 @@ export const Home = (props) => {
             Axios.post("http://localhost:3001/RogersRamanujanCounter", {
                 nValue: nValue,  
                 mValue: mValue,
+                file: file,
             }).then((response)=> {
                 console.log(response);
+                if (file === "text") {
+                    let fileData = JSON.stringify(response.data.data);
+                    fileData = fileData.replace(/,/g, '\n');
+                    fileData = fileData.replace(/;/g, ' ');
+                    fileData = fileData.replace(/\[/g, '');
+                    fileData = fileData.replace(/]/g, '');
+                    fileData = fileData.replace(/"/g, '');
+                    const blob = new Blob([fileData], { type: "text/plain" });
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement("a");
+                    link.download = "partitions.txt";
+                    link.href = url;
+                    link.click();
+                }
+                else {
+                    let ws = XLSX.utils.json_to_sheet(response.data.data);
+                    delete_row(ws, 0);
+                    const wb = { Sheets: { 'data': ws }, SheetNames: ['data']};
+                    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array'});
+                    const data = new Blob([excelBuffer], { type: fileType });
+                    FileSaver.saveAs(data, 'partitions' + fileExtension);
+                }
                 setResult("There are "+ response.data.message +" partitions!");
             });
         } else if (active === "Rogers Ramanujan Gordon" && option === "Counter" && (mValue !== "" && nValue !== "" && kValue !== "")) {
             Axios.post("http://localhost:3001/RogersRamanujanGordonCounter", {
-                nValue: nValue,  
-                mValue: mValue,
-                kValue: kValue,
-            }).then((response)=> {
-                console.log(response);
-                setResult("There are "+ response.data.message +" partitions!");
-            });
-        } else if (active === "Rogers Ramanujan Gordon" && option === "Generator" && (mValue !== "" && nValue !== "" && kValue !== "") 
-            && file !== "") {
-            Axios.post("http://localhost:3001/RogersRamanujanGordonEnumeration", {
                 nValue: nValue,  
                 mValue: mValue,
                 kValue: kValue,
@@ -156,6 +169,10 @@ export const Home = (props) => {
                 if (file === "text") {
                     let fileData = JSON.stringify(response.data.data);
                     fileData = fileData.replace(/,/g, '\n');
+                    fileData = fileData.replace(/;/g, ' ');
+                    fileData = fileData.replace(/\[/g, '');
+                    fileData = fileData.replace(/]/g, '');
+                    fileData = fileData.replace(/"/g, '');
                     const blob = new Blob([fileData], { type: "text/plain" });
                     const url = URL.createObjectURL(blob);
                     const link = document.createElement("a");
@@ -164,7 +181,42 @@ export const Home = (props) => {
                     link.click();
                 }
                 else {
-                    const ws = XLSX.utils.json_to_sheet(response.data.data);
+                    let ws = XLSX.utils.json_to_sheet(response.data.data);
+                    delete_row(ws, 0);
+                    const wb = { Sheets: { 'data': ws }, SheetNames: ['data']};
+                    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array'});
+                    const data = new Blob([excelBuffer], { type: fileType });
+                    FileSaver.saveAs(data, 'partitions' + fileExtension);
+                }
+                setResult("There are "+ response.data.message +" partitions!");
+            });
+        } else if (active === "Rogers Ramanujan Gordon" && option === "Generator" && (mValue !== "" && nValue !== "" && kValue !== "") 
+            && file !== "") {
+            Axios.post("http://localhost:3001/RogersRamanujanGordonEnumeration", {
+                nValue: nValue,  
+                mValue: mValue,
+                kValue: kValue,
+                file: file,
+                format: format,
+            }).then((response)=> {
+                console.log(response);
+                if (file === "text") {
+                    let fileData = JSON.stringify(response.data.data);
+                    fileData = fileData.replace(/,/g, '\n');
+                    fileData = fileData.replace(/;/g, ' ');
+                    fileData = fileData.replace(/\[/g, '');
+                    fileData = fileData.replace(/]/g, '');
+                    fileData = fileData.replace(/"/g, '');
+                    const blob = new Blob([fileData], { type: "text/plain" });
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement("a");
+                    link.download = "partitions.txt";
+                    link.href = url;
+                    link.click();
+                }
+                else {
+                    let ws = XLSX.utils.json_to_sheet(response.data.data);
+                    delete_row(ws, 0);
                     const wb = { Sheets: { 'data': ws }, SheetNames: ['data']};
                     const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array'});
                     const data = new Blob([excelBuffer], { type: fileType });
@@ -177,11 +229,16 @@ export const Home = (props) => {
                 nValue: nValue,  
                 mValue: mValue,
                 file: file,
+                format: format,
             }).then((response)=> {
                 console.log(response);
                 if (file === "text") {
                     let fileData = JSON.stringify(response.data.data);
                     fileData = fileData.replace(/,/g, '\n');
+                    fileData = fileData.replace(/;/g, ' ');
+                    fileData = fileData.replace(/\[/g, '');
+                    fileData = fileData.replace(/]/g, '');
+                    fileData = fileData.replace(/"/g, '');
                     const blob = new Blob([fileData], { type: "text/plain" });
                     const url = URL.createObjectURL(blob);
                     const link = document.createElement("a");
@@ -190,7 +247,8 @@ export const Home = (props) => {
                     link.click();
                 }
                 else {
-                    const ws = XLSX.utils.json_to_sheet(response.data.data);
+                    let ws = XLSX.utils.json_to_sheet(response.data.data);
+                    delete_row(ws, 0);
                     const wb = { Sheets: { 'data': ws }, SheetNames: ['data']};
                     const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array'});
                     const data = new Blob([excelBuffer], { type: fileType });

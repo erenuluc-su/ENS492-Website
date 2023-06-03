@@ -38,17 +38,21 @@ void RogersRamanujanCounter::operation(vector<vector<vector<string>>>& table, un
 }
 
 void RogersRamanujanCounter::show (vector<vector<vector<string>>>& table, unsigned long long k, unsigned long long m, unsigned long long n){ //for debug
-    for(unsigned long long i=0; i<k; i++){
-        cout<<endl;
-        cout<< "A = "<< i <<endl;
-        for(unsigned long long x=0;x<m;x++){
-            for(unsigned long long y=0;y<n;y++)  // loop for the three elements on the line
-            {
-                cout<< table[i][x][y] << " ";  // display the current element out of the array
-            }
-            cout<<endl;  // when the inner loop is done, go to a new line
+    for(unsigned long long i=1; i<k; i++){
+        partitions += "K = " + to_string(i+1) + ",";
+        for(unsigned long long x=0;x<n;x++){
+            partitions += " n=" + to_string(x+1);
         }
-        cout<<endl;
+        partitions += ",";
+        for(unsigned long long x=0;x<m;x++){
+            partitions += "m=" + to_string(x+1) + " ";
+            for(unsigned long long y=0;y<n;y++)
+            {
+                partitions += table[i][x][y] + " ";  // display the current element out of the array
+            }
+            partitions += ",";  // when the inner loop is done, go to a new line
+        }
+        partitions += ",";
     }
 }
 
@@ -64,18 +68,29 @@ string RogersRamanujanCounter::rrgc(int m, int n, int k){
             }
         }
     }
-    //show(table, ll_k, ll_m, ll_n); //Shows tables for debug!!!
+    RogersRamanujanCounter::show(table, ll_k, ll_m, ll_n);
     return table[k-1][m-1][n-1]; //returns the last element of the table
 }
 
-void RogersRamanujanCounter::print_vector(vector<int> list){ //prints results to txt
-    for(int i=0;i<list.size();i++){
-        partitions += to_string(list[i]);
-        if(i != list.size()-1){
-            partitions += "+";
+void RogersRamanujanCounter::print_vector(vector<int> list, bool format){ //prints results to txt
+    if (format){
+        for(int j=0;j<list.size();j++){
+            partitions += to_string(list[j]);
+            if(j+1 != list.size()){
+                partitions += ";";
+            }
         }
+        partitions += ",";
     }
-    partitions += ",";
+    else{
+        for(int j=0;j<list.size();j++){
+            partitions += to_string(list[j]);
+            if(j+1 != list.size()){
+                partitions += "+";
+            }
+        }
+        partitions += ",";
+    }
 }
 
 int RogersRamanujanCounter::sum_vector(vector<int> nums){ //sums all the integers in a vector
@@ -101,7 +116,7 @@ bool RogersRamanujanCounter::phase_zero_k_check(vector<int> nums, int k){ //retu
     return false;
 }
 
-void RogersRamanujanCounter::rr1(int m, int n){ //rogers ramanujan for k = 2
+void RogersRamanujanCounter::rr1(int m, int n, bool format){ //rogers ramanujan for k = 2
     if(m == 1){
         partnum = "There is a total of 1 partition.";
         return;
@@ -119,7 +134,7 @@ void RogersRamanujanCounter::rr1(int m, int n){ //rogers ramanujan for k = 2
         nums[i] = 2*i+1;
     }
     nums[m-1] = n - RogersRamanujanCounter::sum_vector(nums); //first partition
-    RogersRamanujanCounter::print_vector(nums);
+    RogersRamanujanCounter::print_vector(nums, format);
     int total = 1;
     bool changed = false;
     int phase = 0;
@@ -142,7 +157,7 @@ void RogersRamanujanCounter::rr1(int m, int n){ //rogers ramanujan for k = 2
             }
         }
         if(changed){
-            RogersRamanujanCounter::print_vector(nums);
+            RogersRamanujanCounter::print_vector(nums, format);
             total += 1;
             changed = false;
         }
@@ -159,13 +174,13 @@ void RogersRamanujanCounter::rr1(int m, int n){ //rogers ramanujan for k = 2
     }
 }
 
-void RogersRamanujanCounter::rr(int m, int n, int k){ //rogers ramanujan
+void RogersRamanujanCounter::rr(int m, int n, int k, bool format){ //rogers ramanujan
     if(k < 2){
         partnum = "There are no partitions.";
         return;
     }
     if(k == 2){
-        rr1(m,n);
+        rr1(m, n, format);
         return;
     }
     if((m*m) / (k-1) > n){
@@ -180,7 +195,7 @@ void RogersRamanujanCounter::rr(int m, int n, int k){ //rogers ramanujan
         nums[i] = 2*(i/(k-1))+1;
     }
     nums[m-1] = n - RogersRamanujanCounter::sum_vector(nums); //first partition
-    RogersRamanujanCounter::print_vector(nums);
+    RogersRamanujanCounter::print_vector(nums, format);
     vector<int> temp = nums;
     int total = 1;
     bool changed = false;
@@ -240,7 +255,7 @@ void RogersRamanujanCounter::rr(int m, int n, int k){ //rogers ramanujan
             }
         }
         if(changed){
-            RogersRamanujanCounter::print_vector(nums);
+            RogersRamanujanCounter::print_vector(nums, format);
             total += 1;
             changed = false;
         }
