@@ -336,7 +336,7 @@ void RogersRamanujanCounter::print_partitions(vector<vector<int>> partition, boo
             for(int j=0;j<partition[i].size();j++){
                 partitions += to_string(partition[i][j]);
                 if(j+1 != partition[i].size()){
-                    partitions += ";+;";
+                    partitions += ";";
                 }
             }
             partitions += ",";
@@ -472,7 +472,12 @@ void RogersRamanujanCounter::cie(int m, int n, bool format){
 void RogersRamanujanCounter::showcap(vector<vector<vector<int>>>& table, unsigned long long m, unsigned long long n){
     for(unsigned long long i=1; i<4; i++){
         partitions += "A = " + to_string(i) + ",";
+        for(unsigned long long x=0;x<n;x++){
+            partitions += " n=" + to_string(x+1);
+        }
+        partitions += ",";
         for(unsigned long long x=0;x<m;x++){
+            partitions += "m=" + to_string(x+1) + " ";
             for(unsigned long long y=0;y<n;y++)
             {
                 partitions += to_string(table[i][x][y]) + " ";  // display the current element out of the array

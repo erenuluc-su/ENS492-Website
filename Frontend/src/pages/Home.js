@@ -18,7 +18,7 @@ export const Home = (props) => {
     `;
 
     const partitions = ['Rogers Ramanujan', 'Rogers Ramanujan Gordon', 'Capparelli\'s Identity'];
-    const options = ['Enumerator', 'Counter'];
+    const options = ['Generator', 'Counter'];
 
     const [active, setActive] = useState('');
     const [option, setOption] = useState('');
@@ -85,7 +85,7 @@ export const Home = (props) => {
                                 Please enter an integer for every input value!
                             </p>
                         )
-                    } else if (file === "") {
+                    } else if (file === "" && active !== "" && option !== "") {
                         return (
                             <p>
                                 Please select a file type!
@@ -144,7 +144,7 @@ export const Home = (props) => {
                 console.log(response);
                 setResult("There are "+ response.data.message +" partitions!");
             });
-        } else if (active === "Rogers Ramanujan Gordon" && option === "Enumerator" && (mValue !== "" && nValue !== "" && kValue !== "") 
+        } else if (active === "Rogers Ramanujan Gordon" && option === "Generator" && (mValue !== "" && nValue !== "" && kValue !== "") 
             && file !== "") {
             Axios.post("http://localhost:3001/RogersRamanujanGordonEnumeration", {
                 nValue: nValue,  
@@ -172,7 +172,7 @@ export const Home = (props) => {
                 }
                 setResult(response.data.message);
             });
-        } else if (active === "Rogers Ramanujan" && option === "Enumerator" && (mValue !== "" && nValue !== "") && file !== "") {
+        } else if (active === "Rogers Ramanujan" && option === "Generator" && (mValue !== "" && nValue !== "") && file !== "") {
             Axios.post("http://localhost:3001/RogersRamanujanEnumeration", {
                 nValue: nValue,  
                 mValue: mValue,
@@ -229,7 +229,7 @@ export const Home = (props) => {
                 }
                 setResult("There are "+ response.data.message +" partitions!");
             });
-        } else if (active === "Capparelli's Identity" && option === "Enumerator" && (mValue !== "" && nValue !== "") && file !== "") {
+        } else if (active === "Capparelli's Identity" && option === "Generator" && (mValue !== "" && nValue !== "") && file !== "") {
             Axios.post("http://localhost:3001/CapparelliEnumeration", {
                 nValue: nValue,  
                 mValue: mValue,
@@ -305,7 +305,7 @@ export const Home = (props) => {
             </div>
             <div>
                 {(() => {
-                if (option === "Enumerator") {
+                if (option === "Generator") {
                     return (
                         <div className = "Format">
                             <div>
@@ -325,7 +325,8 @@ export const Home = (props) => {
                             </div>
                         </div>
                     )
-                } else {
+                } 
+                else if (option === "Counter") {
                     return (
                         <div className = "NoFormat">
                             <div>
