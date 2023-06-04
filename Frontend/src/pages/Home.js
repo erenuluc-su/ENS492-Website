@@ -18,7 +18,7 @@ export const Home = (props) => {
     `;
 
     const partitions = ['Rogers Ramanujan', 'Rogers Ramanujan Gordon', 'Capparelli\'s Identity', 'Our Take on Kanade-Russel\'s Exploration'];
-    const options = ['Generator', 'Counter'];
+    const options = ['Generator', 'Enumerator'];
 
     const [active, setActive] = useState('');
     const [option, setOption] = useState('');
@@ -148,7 +148,7 @@ export const Home = (props) => {
     }
 
     const generate = () => {
-        if (active === "Rogers Ramanujan" && option === "Counter" && (mValue !== "" && nValue !== "")) {
+        if (active === "Rogers Ramanujan" && option === "Enumerator" && (mValue !== "" && nValue !== "")) {
             Axios.post("http://localhost:3001/RogersRamanujanCounter", {
                 nValue: nValue,  
                 mValue: mValue,
@@ -179,7 +179,7 @@ export const Home = (props) => {
                 }
                 setResult("There are "+ response.data.message +" partitions!");
             });
-        } else if (active === "Rogers Ramanujan Gordon" && option === "Counter" && (mValue !== "" && nValue !== "" && kValue !== "")) {
+        } else if (active === "Rogers Ramanujan Gordon" && option === "Enumerator" && (mValue !== "" && nValue !== "" && kValue !== "")) {
             Axios.post("http://localhost:3001/RogersRamanujanGordonCounter", {
                 nValue: nValue,  
                 mValue: mValue,
@@ -277,7 +277,7 @@ export const Home = (props) => {
                 }
                 setResult(response.data.message);
             });
-        } else if (active === "Capparelli's Identity" && option === "Counter" && (mValue !== "" && nValue !== "") && file !== "") {
+        } else if (active === "Capparelli's Identity" && option === "Enumerator" && (mValue !== "" && nValue !== "") && file !== "") {
             Axios.post("http://localhost:3001/CapparelliCounter", {
                 nValue: nValue,  
                 mValue: mValue,
@@ -472,7 +472,7 @@ export const Home = (props) => {
                         </div>
                     )
                 } 
-                else if (option === "Counter") {
+                else if (option === "Enumerator") {
                     return (
                         <div className = "NoFormat">
                             <div>
