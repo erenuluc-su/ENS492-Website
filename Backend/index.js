@@ -300,3 +300,58 @@ app.post("/CapparelliEnumeration",(req,res) =>{
       res.send({message: root, data: partition});
    });
 })
+
+app.post("/Our",(req,res) =>{
+  const mValue = req.body.mValue;
+  const nValue = req.body.nValue;
+  const aValue = req.body.aValue;
+  const bValue = req.body.bValue;
+  const cValue = req.body.cValue;
+  const dValue = req.body.dValue;
+  const minValue = req.body.minValue;
+  const file = req.body.file;
+  const format = req.body.format
+
+  createModule().then(({RogersRamanujanCounter}) => {
+      // Perform computation
+      const rogersramanujancounter = new RogersRamanujanCounter();
+      rogersramanujancounter.enumerator(mValue, nValue, aValue, bValue, cValue, dValue, minValue, format);
+      const root = rogersramanujancounter.getPartnum();
+      let data = rogersramanujancounter.getPartitions();
+  
+      console.log(root);
+      data = data.slice(0, -1);
+      let newText = data.split(',');
+      let partition = [];
+      let part = [];
+      let parts = [];
+
+      if (file === "text") {
+        for (var i=0; i < newText.length; i++) {
+          part = [newText[i]];
+          partition.push(part);
+        }
+      }
+      else {
+        if (format === true){
+          for (var i=0; i < newText.length; i++) {
+            parts = newText[i].split(';');
+            for (var j=0; j < parts.length; j++) {
+              part.push(parts[j]);
+            }
+            partition.push(part);
+            part = [];
+            parts = [];
+          }
+        }
+        else{
+          for (var i=0; i < newText.length; i++) {
+            part = {'Partitions':newText[i]};
+            partition.push(part);
+          }
+        }
+      }
+      res.send({message: root, data: partition});
+   });
+})
+

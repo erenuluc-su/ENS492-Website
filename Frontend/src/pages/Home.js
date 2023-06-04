@@ -17,14 +17,22 @@ export const Home = (props) => {
         display: flex;
     `;
 
-    const partitions = ['Rogers Ramanujan', 'Rogers Ramanujan Gordon', 'Capparelli\'s Identity'];
+    const partitions = ['Rogers Ramanujan', 'Rogers Ramanujan Gordon', 'Capparelli\'s Identity', 'Our Take on Kanade-Russel\'s Exploration'];
     const options = ['Generator', 'Counter'];
 
     const [active, setActive] = useState('');
     const [option, setOption] = useState('');
+
     const [mValue, setMValue] = useState("");
     const [nValue, setNValue] = useState("");
     const [kValue, setKValue] = useState("");
+
+    const [aValue, setAValue] = useState("");
+    const [bValue, setBValue] = useState("");
+    const [cValue, setCValue] = useState("");
+    const [dValue, setDValue] = useState("");
+    const [minValue, setMinValue] = useState("");
+
     const [result, setResult] = useState("");
     const [file, setFile] = useState("");
     const [format, setFormat] = useState(false);
@@ -49,7 +57,7 @@ export const Home = (props) => {
     }
 
     function ToggleGroupOptions() {
-        if (active.length !== 0) {
+        if (active.length !== 0 && active !== "Our Take on Kanade-Russel\'s Exploration") {
             return (
                 <div className= "Option">
                     <p>
@@ -79,7 +87,15 @@ export const Home = (props) => {
                                 Please enter an integer for every input value!
                             </p>
                         )
-                    } else if ((active === "Rogers Ramanujan" || active === "Capparelli's Identity") && option.length !== 0 && (mValue === "" || nValue === "")) {
+                    } else if ((active === "Rogers Ramanujan" || active === "Capparelli's Identity") && option.length !== 0 && 
+                    (mValue === "" || nValue === "")) {
+                        return (
+                            <p>
+                                Please enter an integer for every input value!
+                            </p>
+                        )
+                    } else if (active === "Our Take on Kanade-Russel\'s Exploration" && option.length !== 0 && 
+                    (mValue === "" || nValue === "" || aValue === "" || bValue === "" || cValue === "" || dValue === "" || minValue === "")) {
                         return (
                             <p>
                                 Please enter an integer for every input value!
@@ -102,6 +118,11 @@ export const Home = (props) => {
         setMValue("");
         setNValue("");
         setKValue("");
+        setAValue("");
+        setBValue("");
+        setCValue("");
+        setDValue("");
+        setMinValue("");
         setResult("");
         setFile("");
         setFormat(false);
@@ -319,6 +340,44 @@ export const Home = (props) => {
                 }
                 setResult(response.data.message);
             });
+        } else if (active === "Our Take on Kanade-Russel\'s Exploration" && 
+        (mValue !== "" || nValue !== "" || aValue !== "" || bValue !== "" || cValue !== "" || dValue !== "" || minValue !== "") && file !== "") {
+            Axios.post("http://localhost:3001/Our", {
+                nValue: nValue,  
+                mValue: mValue,
+                aValue: aValue,  
+                bValue: bValue,
+                cValue: cValue,  
+                dValue: dValue,
+                minValue: minValue,
+                file: file,
+                format: format,
+            }).then((response)=> {
+                console.log(response);
+                if (file === "text") {
+                    let fileData = JSON.stringify(response.data.data);
+                    fileData = fileData.replace(/,/g, '\n');
+                    fileData = fileData.replace(/;/g, ' ');
+                    fileData = fileData.replace(/\[/g, '');
+                    fileData = fileData.replace(/]/g, '');
+                    fileData = fileData.replace(/"/g, '');
+                    const blob = new Blob([fileData], { type: "text/plain" });
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement("a");
+                    link.download = "partitions.txt";
+                    link.href = url;
+                    link.click();
+                }
+                else {
+                    let ws = XLSX.utils.json_to_sheet(response.data.data);
+                    delete_row(ws, 0);
+                    const wb = { Sheets: { 'data': ws }, SheetNames: ['data']};
+                    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array'});
+                    const data = new Blob([excelBuffer], { type: fileType });
+                    FileSaver.saveAs(data, 'partitions' + fileExtension);
+                }
+                setResult(response.data.message);
+            });
         }
     };
 
@@ -358,12 +417,41 @@ export const Home = (props) => {
                             placeholder = "Write the value of n here!" />
                         </div>
                     )
+                } else if (active === "Our Take on Kanade-Russel\'s Exploration") {
+                    return (
+                        <div className = "Our Take on Kanade-Russel\'s Exploration">
+                            <div> 
+                                <Popup
+                                trigger={<buttonfm>Input Explanation</buttonfm>}
+                                position = "top center"
+                                style={{ color: 'white' }}
+                                >
+                                Input A, B, C and D must satisfy the following formula: λ<sub>x</sub>+λ<sub>(x+A)</sub>≡C mod D or 
+                                |λ<sub>x</sub>-λ<sub>(x+A)</sub>| {">"} B and input min is the possible minimum part of partitions.
+                                </Popup>
+                            </div>
+                        <input type="text" value = {mValue} onChange={(e) => setMValue(e.target.value)} 
+                            placeholder = "Write the value of m here!" />
+                        <input type="text" value = {nValue} onChange={(e) => setNValue(e.target.value)} 
+                            placeholder = "Write the value of n here!" />
+                        <input type="text" value = {aValue} onChange={(e) => setAValue(e.target.value)} 
+                            placeholder = "Write the value of A here!" />
+                        <input type="text" value = {bValue} onChange={(e) => setBValue(e.target.value)} 
+                            placeholder = "Write the value of B here!" />
+                        <input type="text" value = {cValue} onChange={(e) => setCValue(e.target.value)} 
+                            placeholder = "Write the value of C here!" />
+                        <input type="text" value = {dValue} onChange={(e) => setDValue(e.target.value)} 
+                            placeholder = "Write the value of D here!" />
+                        <input type="text" value = {minValue} onChange={(e) => setMinValue(e.target.value)} 
+                            placeholder = "Write the value of min here!" />
+                        </div>
+                    )
                 }
                 })()}
             </div>
             <div>
                 {(() => {
-                if (option === "Generator") {
+                if (option === "Generator" || active === "Our Take on Kanade-Russel\'s Exploration") {
                     return (
                         <div className = "Format">
                             <div>
@@ -404,7 +492,7 @@ export const Home = (props) => {
             </div>
             <div>
                 {(() => {
-                if (active.length !== 0 && option.length !== 0) {
+                if (active.length !== 0 && (option.length !== 0 || active === "Our Take on Kanade-Russel\'s Exploration")) {
                     return (
                         <div className = "Generate">
                         <Button onClick={generate}> Generate </Button>
@@ -425,8 +513,9 @@ export const Home = (props) => {
                 position = "top left"
                 style={{ color: 'white' }}
             >
-                "Partionerator" is a web application that enables users to efficiently generate a range of partition 
-                (Rogers Ramanujan, Rogers Ramanujan Gordon, Capparelli's Identity and X) enumeration and counting methods. 
+                "Partionerator" is a web application for generating partition 
+                (Rogers Ramanujan, Rogers Ramanujan Gordon, Capparelli's Identity, and our take on Kanade-Russel's Exploration) 
+                generation and counting methods efficiently.
             </Popup>
         </div>
     );

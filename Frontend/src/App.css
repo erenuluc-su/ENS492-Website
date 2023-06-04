@@ -124,6 +124,17 @@ child-btns{
   font-weight : bold;
 }
 
+.buttonfm {
+  border: none;
+  padding: 20px;
+  border-radius: 70px;
+  cursor: pointer;
+  font-weight : bold;
+  margin-right: 0.5cm;
+  margin-bottom: 0,5cm;
+  margin-top: 0.5cm;
+}
+
 button {
   border: none;
   background-color: aliceblue;

@@ -502,3 +502,232 @@ void RogersRamanujanCounter::showcap(vector<vector<vector<int>>>& table, unsigne
         partitions += ",";
     }
 }
+
+int RogersRamanujanCounter::min_next_num_noA(int num, int B, int C, int D){ //finds the next smallest possible number
+    int result = 0;
+    for(int i=1;i<=D;i++){
+        if((2*num+i)%D == C){
+            result = num + i;
+        }
+    }
+    if(num + B < result){
+        result = num + B + 1;
+    }
+    return result;
+}
+
+int RogersRamanujanCounter::min_next_num(int num, int B, int C, int D, int prev_num){ //finds the next smallest possible number
+
+    if(num + B + 1 <= prev_num){
+        return prev_num + 1;
+    }
+
+    int result = 0;
+    for(int i=1;i<=(prev_num-num)+D;i++){
+        if((2*num+i)%D == C && num + i > prev_num){
+            result = num + i;
+        }
+    }
+    if(num + B < result){
+        result = num + B + 1;
+    }
+    
+    return result;
+}
+
+int RogersRamanujanCounter::num_check_noA(int small_num, int big_num, int B, int C, int D){
+
+    //return 0 = check failed
+    //return 1 = check failed but next one might be succesful
+    //return 2 = check succesful
+
+    if(small_num >= big_num){
+        return 0;
+    }
+
+    if(big_num - small_num > B){
+        return 2;
+    }
+
+    if((small_num + big_num) % D == C){
+        return 2;
+    }
+
+    return 1;
+
+}
+
+int RogersRamanujanCounter::num_check(int small_num, int prev_num, int big_num, int B, int C, int D){
+
+    //return 0 = check failed
+    //return 1 = check failed but next one might be succesful
+    //return 2 = check succesful
+
+    if(prev_num >= big_num){
+        return 0;
+    }
+
+    if(big_num - small_num > B){
+        return 2;
+    }
+
+    if((small_num + big_num) % D == C){
+        return 2;
+    }
+
+    return 1;
+
+}
+
+void RogersRamanujanCounter::set_vector(vector<int> vect1, vector<int> & vect2){ //makes vect2 equal to vect1
+    for(int i=0;i<vect1.size();i++){
+        vect2[i] = vect1[i];
+    }
+}
+
+int RogersRamanujanCounter::enumerator(int m, int n, int A, int B, int C, int D, int min_num, bool format){
+    if(n == 1){
+        partnum = "There is a total of 1 partition.";
+        return 0;
+    }
+
+    if(m == 1){
+        partnum = "There are no partitions.";
+        return 1;
+    }
+
+    vector<int> nums(m, 0);
+    for(int i=0;i<A;i++){ //fills the vector with initial values
+        nums[i] = min_num+i;
+    }
+    for(int i=A;i<m-1;i++){ //fills the vector with initial values
+        nums[i] = RogersRamanujanCounter::min_next_num(nums[i-A],B,C,D,nums[i-1]);
+    }
+    nums[m-1] = n - RogersRamanujanCounter::sum_vector(nums);
+
+    if(RogersRamanujanCounter::num_check(nums[m-A-1],nums[m-2],nums[m-1],B,C,D) == 0){
+        partnum = "There are no partitions.";
+        return 0;
+    }
+
+    RogersRamanujanCounter::print_vector(nums, format);
+    int total = 1;
+
+    vector<int> temp_nums(m, 0);
+    RogersRamanujanCounter::set_vector(nums,temp_nums);
+
+    bool changed = false;
+    bool p_flag = false;
+    int phase = 0;
+    while(true){
+        if(phase == 0){
+            if(m>2){
+                if(m-A-2 >= 0){
+                    if(RogersRamanujanCounter::num_check(nums[m-A-1],nums[m-2]+1,nums[m-1]-1,B,C,D) == 2 && RogersRamanujanCounter::num_check(nums[m-A-2],nums[m-3],nums[m-2]+1,B,C,D) == 2){
+                        nums[m-1] = nums[m-1] - 1;
+                        nums[m-2] = nums[m-2] + 1;
+                        changed = true;
+                    }
+                    else if(RogersRamanujanCounter::num_check(nums[m-A-2],nums[m-3],nums[m-2]+1,B,C,D) == 1){
+                        nums[m-1] = nums[m-1] - 1;
+                        nums[m-2] = nums[m-2] + 1;
+                    }
+                    else if(RogersRamanujanCounter::num_check(nums[m-A-1],nums[m-2]+1,nums[m-1]-1,B,C,D) == 0 || RogersRamanujanCounter::num_check(nums[m-A-1],nums[m-2]+1,nums[m-1]-1,B,C,D) == 1){
+                        p_flag = true;
+                    }
+                }
+                else{
+                    if(RogersRamanujanCounter::num_check(nums[m-A-1],nums[m-2]+1,nums[m-1]-1,B,C,D) == 2 && RogersRamanujanCounter::num_check_noA(nums[m-3],nums[m-2]+1,B,C,D) == 2){
+                        nums[m-1] = nums[m-1] - 1;
+                        nums[m-2] = nums[m-2] + 1;
+                        changed = true;
+                    }
+                    else if(RogersRamanujanCounter::num_check_noA(nums[m-3],nums[m-2]+1,B,C,D) == 1){
+                        nums[m-1] = nums[m-1] - 1;
+                        nums[m-2] = nums[m-2] + 1;
+                    }
+                    else if(RogersRamanujanCounter::num_check(nums[m-A-1],nums[m-2]+1,nums[m-1]-1,B,C,D) == 0 || RogersRamanujanCounter::num_check(nums[m-A-1],nums[m-2]+1,nums[m-1]-1,B,C,D) == 1){
+                        p_flag = true;
+                    }
+                }
+            }
+            else{
+                if(RogersRamanujanCounter::num_check(nums[m-A-1],nums[m-2]+1,nums[m-1]-1,B,C,D) == 2){
+                    nums[m-1] = nums[m-1] - 1;
+                    nums[m-2] = nums[m-2] + 1;
+                    changed = true;
+                }
+                else{
+                    p_flag = true;
+                }
+            }
+        }
+        else{ //phase not zero
+            if(phase != m-2){ // if not last phase
+                RogersRamanujanCounter::set_vector(nums,temp_nums);
+                if(temp_nums[m-3-phase]%D == D-C-1 && temp_nums[m-2-phase] - temp_nums[m-3-phase] == 2){ //increase num in correct position
+                    temp_nums[m-2-phase] += 2;
+                }
+                else{ //increase num in correct position
+                    temp_nums[m-2-phase] += 1;
+                }
+                for(int i=m-phase-1;i<m;i++){ //increase the rest of the nums according to their minimum values
+                    if(i-A >= 0){
+                        temp_nums[i] = RogersRamanujanCounter::min_next_num(temp_nums[i-A],B,C,D,temp_nums[i-1]);
+                    }
+                    else{
+                        temp_nums[i] = RogersRamanujanCounter::min_next_num_noA(temp_nums[i-1],B,C,D);
+                    }
+                }
+                temp_nums[m-1] = n - RogersRamanujanCounter::sum_vector(temp_nums) + temp_nums[m-1]; //set last num
+    
+                if(RogersRamanujanCounter::num_check(temp_nums[m-A-1],temp_nums[m-2],temp_nums[m-1],B,C,D) == 2){
+                    changed = true;
+                    RogersRamanujanCounter::set_vector(temp_nums,nums);
+                    p_flag = false;
+                }
+                else{
+                    RogersRamanujanCounter::set_vector(nums,temp_nums);
+                    p_flag = true;
+                }
+            }
+            else{ //if last phase
+                RogersRamanujanCounter::set_vector(nums,temp_nums);
+                temp_nums[m-2-phase] = temp_nums[m-2-phase] + 1; //increase num in correct position
+                for(int i=m-phase-1;i<m;i++){ //increase the rest of the nums accordingly to their minimum values
+                    temp_nums[i] = RogersRamanujanCounter::min_next_num_noA(temp_nums[i-1],B,C,D);
+                }
+                temp_nums[m-1] = n - RogersRamanujanCounter::sum_vector(temp_nums) + temp_nums[m-1]; //set last num
+    
+                if(RogersRamanujanCounter::num_check_noA(temp_nums[m-2],temp_nums[m-1],B,C,D) == 2){
+                    changed = true;
+                    RogersRamanujanCounter::set_vector(temp_nums,nums);
+                    p_flag = false;
+                }
+                else{
+                    RogersRamanujanCounter::set_vector(nums,temp_nums);
+                    p_flag = true;
+                }
+            }
+        }
+
+        if(changed){
+            RogersRamanujanCounter::print_vector(nums, format);
+            total += 1;
+            changed = false;
+        }
+
+        if(p_flag){ //nums[m-1] - nums[m-2-phase] < (phase + 2) * 2
+            phase++;
+            p_flag = false;
+        }
+        else{
+            phase = 0;
+        }
+
+        if(phase + 1 == m){ //end condition
+            partnum = "There are a total of "+to_string(total)+" partitions.";
+            return total;
+        }
+    }
+}

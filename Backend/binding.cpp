@@ -12,5 +12,6 @@ EMSCRIPTEN_BINDINGS(RogersRamanujanCounter) {
       .function("getPartitions", &RogersRamanujanCounter::getPartitions)
       .function("cic", &RogersRamanujanCounter::cic)
       .function("cie", &RogersRamanujanCounter::cie)
+      .function("enumerator", &RogersRamanujanCounter::enumerator)
       ;
 }
